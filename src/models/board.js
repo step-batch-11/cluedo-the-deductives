@@ -4,8 +4,8 @@ export class Board {
   #config;
   #tiles;
   #rooms;
-  #adjecents;
   #doors;
+  #adjecents;
   #secretPassages;
   #blockedSpace;
   #initalPositions;
@@ -46,7 +46,7 @@ export class Board {
     for (const position of [left, right, top, bottom]) {
       const isTile = this.#isTileArea(position, invalidRanges);
 
-      if ((isTile && position.x > 0) || position.y > 0) {
+      if (isTile && position.x >= 0 && position.y >= 0) {
         const id = `tile-${position.x}-${position.y}`;
         adj.push(id);
       }
@@ -77,7 +77,25 @@ export class Board {
     return [...roomRanges, ...boundaryRanges].flat(Infinity);
   }
 
-  buildTiles(height, width) {
+  #addAdjacents() {
+    for (
+      const [room, entrances] of Object.entries(
+        this.#config.roomEntrances,
+      )
+    ) {
+      entrances.forEach(({ x, y }) => {
+        const tile = `tile-${x}-${y}`;
+
+        if (this.#tiles[tile]) {
+          this.#tiles[tile].adj.push(room);
+        }
+      });
+
+      this.#rooms[room] = { adj: [...entrances] };
+    }
+  }
+
+  #buildTiles(height, width) {
     const invalidRanges = this.#getInvalidRanges();
     for (let row = 0; row < height; row++) {
       for (let col = 0; col < width; col++) {
@@ -88,6 +106,15 @@ export class Board {
         }
       }
     }
+  }
+
+  buildBoard() {
+    this.#buildTiles(this.#config.size.height, this.#config.size.width);
+    this.#addAdjacents();
+  }
+
+  getRooms() {
+    return this.#rooms;
   }
 
   getTiles() {
