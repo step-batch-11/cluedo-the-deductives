@@ -12,12 +12,12 @@ describe("BOARD buildBoard", () => {
     rooms: {
       room1: {
         id: "room1",
-        areas: [[{ start: { x: 1, y: 1 }, end: { x: 2, y: 2 } }]],
+        areas: [{ start: { x: 1, y: 1 }, end: { x: 2, y: 2 } }],
         doors: [{ x: 0, y: 1 }],
       },
     },
 
-    walls: [[{ start: { x: 0, y: 3 }, end: { x: 3, y: 3 } }]],
+    walls: [{ start: { x: 0, y: 3 }, end: { x: 3, y: 3 } }],
 
     startingPositions: {
       p1: { x: 0, y: 0 },
@@ -162,6 +162,14 @@ describe("BOARD buildBoard", () => {
       const graph = smallBoard.getBoardState();
 
       assertEquals(graph["tile-2-2"], undefined);
+    });
+
+    it(" => should have bidirectional edges between tile and room", () => {
+      board.buildBoard();
+      const graph = board.getBoardState();
+
+      assert(graph["tile-0-1"].adj.includes("room1"));
+      assert(graph["room1"].adj.includes("tile-0-1"));
     });
   });
 });
