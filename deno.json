@@ -4,6 +4,7 @@
     "test": "deno test -A",
     "test:watch": "deno test -A --watch",
     "coverage": "deno test -A --coverage",
+    "setup": "chmod u+x ./setup.sh && ./setup.sh",
     "coverage:detailed": {
       "command": "deno coverage --detailed",
       "dependencies": ["coverage"]
