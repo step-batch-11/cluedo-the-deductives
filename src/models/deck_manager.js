@@ -1,54 +1,39 @@
 import { shuffle } from "@std/random";
 
 export class DeckManager {
-  #shuffler;
+  #shuffle;
   #suspects;
   #weapons;
   #rooms;
   #murderCombination;
   #remainingCards;
 
-  constructor({ suspects, weapons, rooms }, shuffler = shuffle) {
-    this.#shuffler = shuffler;
+  constructor({ suspects, weapons, rooms }, shuffleFn = shuffle) {
+    this.#shuffle = shuffleFn;
     this.#suspects = suspects;
     this.#weapons = weapons;
     this.#rooms = rooms;
-    this.#murderCombination = { suspect: null, weapon: null, room: null };
-    this.#remainingCards = [];
+    this.#segregateMurderCombination();
   }
 
-  getMurderCombination() {
-    const suspect = this.#shuffler(this.#suspects)[0];
-    const weapon = this.#shuffler(this.#weapons)[0];
-    const room = this.#shuffler(this.#rooms)[0];
+  #segregateMurderCombination() {
+    const [suspect, ...remainingSuspects] = this.#shuffle(this.#suspects);
+    const [weapon, ...remainingWeapons] = this.#shuffle(this.#weapons);
+    const [room, ...remainingRooms] = this.#shuffle(this.#rooms);
 
     this.#murderCombination = { weapon, suspect, room };
-    return { ...this.#murderCombination };
-  }
-
-  #filterMurderCombination(cards, type) {
-    return cards.filter((card) => card !== this.#murderCombination[type]);
-  }
-
-  getRemainingCards() {
-    const remainingSuspects = this.#filterMurderCombination(
-      this.#suspects,
-      "suspect",
-    );
-
-    const remainingWeapons = this.#filterMurderCombination(
-      this.#weapons,
-      "weapon",
-    );
-
-    const remainingRooms = this.#filterMurderCombination(this.#rooms, "room");
-
-    this.#remainingCards = this.#shuffler([
+    this.#remainingCards = [
       ...remainingSuspects,
       ...remainingWeapons,
       ...remainingRooms,
-    ]);
+    ];
+  }
 
-    return this.#remainingCards;
+  getMurderCombination() {
+    return { ...this.#murderCombination };
+  }
+
+  getRemainingCards() {
+    return [...this.#remainingCards];
   }
 }
