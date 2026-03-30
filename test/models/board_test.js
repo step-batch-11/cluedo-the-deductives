@@ -3,7 +3,7 @@ import { assertEquals } from "@std/assert/equals";
 import { beforeEach, describe, it } from "@std/testing/bdd";
 import { Board } from "../../src/models/board.js";
 
-describe("BOARD - buildBoard", () => {
+describe("BOARD buildBoard", () => {
   let board;
 
   const baseConfig = {
@@ -11,19 +11,19 @@ describe("BOARD - buildBoard", () => {
 
     rooms: {
       room1: {
+        id: "room1",
         areas: [[{ start: { x: 1, y: 1 }, end: { x: 2, y: 2 } }]],
+        doors: [{ x: 0, y: 1 }],
       },
     },
 
     walls: [[{ start: { x: 0, y: 3 }, end: { x: 3, y: 3 } }]],
 
     startingPositions: {
-      p1: "tile-0-0",
+      p1: { x: 0, y: 0 },
     },
 
-    roomEntrances: {
-      room1: [{ x: 0, y: 1 }],
-    },
+    secretPassages: {},
   };
 
   beforeEach(() => {
@@ -33,20 +33,19 @@ describe("BOARD - buildBoard", () => {
   describe("tile creation", () => {
     it(" => should create tiles only in valid areas", () => {
       board.buildBoard();
-      const tiles = board.getTiles();
+      const graph = board.getBoardState();
 
-      assert(tiles["tile-0-0"]);
-      assertEquals(tiles["tile-1-1"], undefined);
-      assertEquals(tiles["tile-3-0"], undefined);
+      assertEquals(graph["room1"].type, "room");
+      assertEquals(graph["tile-0-0"].type, "tile");
     });
   });
 
   describe("adjacency", () => {
     it(" => should assign correct adjacent tiles", () => {
       board.buildBoard();
-      const tiles = board.getTiles();
+      const graph = board.getBoardState();
 
-      const tile = tiles["tile-0-0"];
+      const tile = graph["tile-0-0"];
 
       assertEquals(
         tile.adj.filter((a) => a.startsWith("tile")).sort(),
@@ -54,66 +53,78 @@ describe("BOARD - buildBoard", () => {
       );
     });
 
-    it(" => should not include negative coordinates in adjacency", () => {
+    it(" => should not include out-of-bound coordinates", () => {
       board.buildBoard();
-      const tiles = board.getTiles();
+      const graph = board.getBoardState();
 
-      const tile = tiles["tile-0-0"];
+      const tile = graph["tile-0-0"];
 
-      const hasNegative = tile.adj.some((id) => id.includes("--1"));
+      const hasInvalid = tile.adj.some((id) => id.includes("--1"));
 
-      assertEquals(hasNegative, false);
+      assertEquals(hasInvalid, false);
     });
   });
 
   describe("occupancy", () => {
     it(" => should mark starting positions as occupied", () => {
       board.buildBoard();
-      const tiles = board.getTiles();
+      const graph = board.getBoardState();
 
-      assertEquals(tiles["tile-0-0"].isOccupied, true);
+      assertEquals(graph["tile-0-0"].isOccupied, true);
     });
 
     it(" => should mark non-starting tiles as not occupied", () => {
       board.buildBoard();
-      const tiles = board.getTiles();
+      const graph = board.getBoardState();
 
-      assertEquals(tiles["tile-0-1"].isOccupied, false);
+      assertEquals(graph["tile-0-1"].isOccupied, false);
     });
   });
 
-  describe("room entrances", () => {
-    it(" => should connect entrance tile to room", () => {
+  describe("room graph", () => {
+    it(" => should create room nodes in graph", () => {
       board.buildBoard();
-      const tiles = board.getTiles();
+      const graph = board.getBoardState();
 
-      const entranceTile = tiles["tile-0-1"];
-
-      assert(entranceTile.adj.includes("room1"));
+      assert(graph["room1"]);
+      assertEquals(graph["room1"].type, "room");
     });
 
-    it(" => should register room adjacency correctly", () => {
+    it(" => should link room to its door tiles", () => {
       board.buildBoard();
-      const rooms = board.getRooms();
+      const graph = board.getBoardState();
 
-      assertEquals(rooms["room1"].adj, [{ x: 0, y: 1 }]);
+      assertEquals(graph["room1"].adj, ["tile-0-1"]);
     });
 
-    it(" => should preserve existing tile adjacency when adding room links", () => {
+    it(" => should link door tile back to room", () => {
       board.buildBoard();
-      const tiles = board.getTiles();
+      const graph = board.getBoardState();
 
-      const entranceTile = tiles["tile-0-1"];
+      const tile = graph["tile-0-1"];
 
-      assert(entranceTile.adj.includes("tile-0-0"));
-      assert(entranceTile.adj.includes("room1"));
+      assert(tile.adj.includes("room1"));
     });
 
-    it(" => should not crash if entrance is inside invalid area", () => {
+    it(" => should preserve tile adjacency when adding room links", () => {
+      board.buildBoard();
+      const graph = board.getBoardState();
+
+      const tile = graph["tile-0-1"];
+
+      assert(tile.adj.includes("tile-0-0"));
+      assert(tile.adj.includes("room1"));
+    });
+
+    it(" => should not crash if door is inside invalid area", () => {
       const badConfig = {
         ...baseConfig,
-        roomEntrances: {
-          room1: [{ x: 1, y: 1 }],
+        rooms: {
+          room1: {
+            id: "room1",
+            areas: [[{ start: { x: 1, y: 1 }, end: { x: 2, y: 2 } }]],
+            doors: [{ x: 1, y: 1 }],
+          },
         },
       };
 
@@ -121,8 +132,10 @@ describe("BOARD - buildBoard", () => {
 
       badBoard.buildBoard();
 
-      const rooms = badBoard.getRooms();
-      assertEquals(rooms["room1"].adj, [{ x: 1, y: 1 }]);
+      const graph = badBoard.getBoardState();
+
+      assert(graph["room1"]);
+      assertEquals(graph["room1"].adj, ["tile-1-1"]);
     });
   });
 
@@ -134,9 +147,9 @@ describe("BOARD - buildBoard", () => {
       });
 
       emptyBoard.buildBoard();
-      const tiles = emptyBoard.getTiles();
+      const graph = emptyBoard.getBoardState();
 
-      assertEquals(Object.keys(tiles).length, 0);
+      assertEquals(Object.keys(graph).length, 1);
     });
 
     it(" => should not create tiles outside bounds", () => {
@@ -146,9 +159,9 @@ describe("BOARD - buildBoard", () => {
       });
 
       smallBoard.buildBoard();
-      const tiles = smallBoard.getTiles();
+      const graph = smallBoard.getBoardState();
 
-      assertEquals(tiles["tile-2-2"], undefined);
+      assertEquals(graph["tile-2-2"], undefined);
     });
   });
 });

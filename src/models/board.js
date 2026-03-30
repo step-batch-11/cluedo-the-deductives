@@ -1,28 +1,21 @@
-import { isInRange } from "../utils/board_utils.js";
+import { isInRange, isInsideBoundary } from "../utils/board_utils.js";
 
 export class Board {
   #config;
   #tiles;
-  #rooms;
-  #doors;
-  #adjecents;
-  #secretPassages;
-  #blockedSpace;
-  #initialPositions;
+  #graph;
 
   constructor(boardConfig) {
     this.#config = boardConfig;
-    this.#tiles = {};
-    this.#rooms = {};
-    this.#adjecents = {};
-    this.#doors = {};
-    this.#secretPassages = {};
-    this.#blockedSpace = {};
-    this.#initialPositions = {};
+    this.#graph = {};
+  }
+
+  #getTileId(x, y) {
+    return `tile-${x}-${y}`;
   }
 
   #getRoomRanges() {
-    return Object.values(this.#config.rooms).map((room) => room.areas);
+    return Object.values(this.#config.rooms).flatMap((room) => room.areas);
   }
 
   #getBoundaryRanges() {
@@ -46,8 +39,8 @@ export class Board {
     for (const position of [left, right, top, bottom]) {
       const isTile = this.#isTileArea(position, invalidRanges);
 
-      if (isTile && position.x >= 0 && position.y >= 0) {
-        const id = `tile-${position.x}-${position.y}`;
+      if (isTile && isInsideBoundary(position, this.#config.size)) {
+        const id = this.#getTileId(position.x, position.y);
         adj.push(id);
       }
     }
@@ -55,14 +48,17 @@ export class Board {
     return adj;
   }
 
-  #createTile(col, row) {
-    const startingPositions = this.#getStartingPositions();
-    const id = `tile-${row}-${col}`;
+  #createTile(x, y) {
+    const startingPositions = this.#getStartingPositions().map(({ x, y }) =>
+      this.#getTileId(x, y)
+    );
 
-    this.#tiles[id] = {
+    const id = this.#getTileId(x, y);
+
+    this.#graph[id] = {
       type: "tile",
       isOccupied: startingPositions.includes(id),
-      adj: this.#getAdjacent({ x: col, y: row }),
+      adj: this.#getAdjacent({ x, y }),
     };
   }
 
@@ -78,20 +74,14 @@ export class Board {
   }
 
   #addAdjacents() {
-    for (
-      const [room, entrances] of Object.entries(
-        this.#config.roomEntrances,
-      )
-    ) {
-      entrances.forEach(({ x, y }) => {
-        const tile = `tile-${x}-${y}`;
+    for (const room of Object.values(this.#config.rooms)) {
+      room.doors.forEach(({ x, y }) => {
+        const tile = this.#getTileId(x, y);
 
-        if (this.#tiles[tile]) {
-          this.#tiles[tile].adj.push(room);
+        if (this.#graph[tile]) {
+          this.#graph[tile].adj.push(room.id);
         }
       });
-
-      this.#rooms[room] = { adj: [...entrances] };
     }
   }
 
@@ -108,16 +98,23 @@ export class Board {
     }
   }
 
+  #buildRooms(rooms) {
+    for (const room of rooms) {
+      this.#graph[room.id] = {
+        type: "room",
+        secretPassage: this.#config.secretPassages[room.id],
+        adj: room.doors.map(({ x, y }) => this.#getTileId(x, y)),
+      };
+    }
+  }
+
   buildBoard() {
+    this.#buildRooms(Object.values(this.#config.rooms));
     this.#buildTiles(this.#config.size.height, this.#config.size.width);
     this.#addAdjacents();
   }
 
-  getRooms() {
-    return this.#rooms;
-  }
-
-  getTiles() {
-    return this.#tiles;
+  getBoardState() {
+    return this.#graph;
   }
 }
