@@ -8,7 +8,7 @@ export class Board {
   #adjecents;
   #secretPassages;
   #blockedSpace;
-  #initalPositions;
+  #initialPositions;
 
   constructor(boardConfig) {
     this.#config = boardConfig;
@@ -18,7 +18,7 @@ export class Board {
     this.#doors = {};
     this.#secretPassages = {};
     this.#blockedSpace = {};
-    this.#initalPositions = {};
+    this.#initialPositions = {};
   }
 
   #getRoomRanges() {
