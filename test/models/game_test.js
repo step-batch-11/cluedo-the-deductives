@@ -1,10 +1,10 @@
-import { beforeEach, describe, it } from "@std/testing/bdd";
 import { assertEquals } from "@std/assert";
-import { Game } from "../../src/models/game.js";
-import { Player } from "../../src/models/player.js";
-import { Pawn } from "../../src/models/pawn.js";
-import { DeckManager } from "../../src/models/deck_manager.js";
+import { beforeEach, describe, it } from "@std/testing/bdd";
 import { ROOMS, SUSPECTS, WEAPONS } from "../../src/constants/game_config.js";
+import { DeckManager } from "../../src/models/deck_manager.js";
+import { Game } from "../../src/models/game.js";
+import { Pawn } from "../../src/models/pawn.js";
+import { Player } from "../../src/models/player.js";
 
 describe("GAME", () => {
   let game;
@@ -14,10 +14,7 @@ describe("GAME", () => {
     game = new Game(
       1,
       {},
-      [
-        scarlet,
-        colonel,
-      ],
+      [scarlet, colonel],
       new DeckManager(
         {
           suspects: SUSPECTS,
@@ -117,11 +114,15 @@ describe("GAME", () => {
 
   describe("distribute cards", () => {
     beforeEach(() => {
-      const playersData = [{ id: 1, playerName: "Thor", isHost: true }, {
-        id: 2,
-        playerName: "Hulk",
-        isHost: false,
-      }, { id: 3, playerName: "Loki", isHost: false }];
+      const playersData = [
+        { id: 1, playerName: "Thor", isHost: true },
+        {
+          id: 2,
+          playerName: "Hulk",
+          isHost: false,
+        },
+        { id: 3, playerName: "Loki", isHost: false },
+      ];
 
       playersData.forEach(({ id, playerName, isHost }) => {
         const player = new Player(id, playerName, isHost);

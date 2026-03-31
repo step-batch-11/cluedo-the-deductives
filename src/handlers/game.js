@@ -1,4 +1,4 @@
-import { boardConfig } from "../constants/boardConfig.js";
+import { boardConfig } from "../constants/board_config.js";
 import { PAWNS, ROOMS, SUSPECTS, WEAPONS } from "../constants/game_config.js";
 import { Board } from "../models/board.js";
 import { DeckManager } from "../models/deck_manager.js";
