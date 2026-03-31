@@ -2,6 +2,7 @@ import { assert } from "@std/assert/assert";
 import { assertEquals } from "@std/assert/equals";
 import { beforeEach, describe, it } from "@std/testing/bdd";
 import { Board } from "../../src/models/board.js";
+import { boardConfig } from "../../src/constants/board_config.js";
 
 describe("BOARD buildBoard", () => {
   let board;
@@ -203,13 +204,22 @@ describe("BOARD buildBoard", () => {
       ]);
     });
 
-    it(" => should give all possible reachable positions: from a room", () => {
+    it(" => should give all possible reachable positions: from a room(mock)", () => {
       const smallBoard = new Board({
         ...baseConfig,
         size: { height: 2, width: 2 },
       });
       smallBoard.buildBoard();
       assertEquals(smallBoard.getReachableNodes("room1", 1), ["tile-0-1"]);
+    });
+
+    it(" => should give all possible reachable positions: from a room(board config)", () => {
+      const board = boardConfig;
+      const smallBoard = new Board({
+        ...board,
+      });
+      smallBoard.buildBoard();
+      assertEquals(smallBoard.getReachableNodes("kitchen", 1), ["tile-4-6"]);
     });
   });
 });

@@ -10,6 +10,7 @@ export class Game {
   #deck;
   #players;
   #turnOrder;
+  #currentPlayer;
   #shuffle;
   constructor(id, board, pawns, deck, shuffleFn = shuffle) {
     this.#currentState = this.#states.shift();
@@ -26,6 +27,7 @@ export class Game {
     this.#distributeCards();
     this.changeCurrentState();
     this.#setTurnOrder();
+    this.#setCurrentPlayer();
   }
 
   getCurrentState() {
@@ -40,8 +42,20 @@ export class Game {
     this.#currentState = this.#states.shift();
   }
 
+  #setCurrentPlayer() {
+    this.#currentPlayer = this.#turnOrder[0];
+  }
+
+  getCurrentPlayer() {
+    return this.#currentPlayer;
+  }
+
   #setTurnOrder() {
     this.#turnOrder = this.#shuffle(Object.values(this.#players));
+  }
+
+  getTurnOrder() {
+    return this.#turnOrder;
   }
 
   addPlayer(player) {

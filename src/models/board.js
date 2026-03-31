@@ -121,9 +121,10 @@ export class Board {
 
   getReachableNodes(from, steps, start = from, visited = [], res = new Set()) {
     const board = this.getBoardState();
-    if (board[from].isOccupied && start !== from) return [];
 
-    if ((start !== from && board[from].type === "room") || steps === 0) {
+    if (board[from]?.isOccupied && start !== from) return [];
+
+    if ((start !== from && board[from]?.type === "room") || steps === 0) {
       res.add(from);
       return Array.from(res);
     }

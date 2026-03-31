@@ -8,18 +8,31 @@ export const serveRollAndTurns = (c, randomFn = Math.random) => {
 const getReachableTurns = (game, steps) => {
   const currentPawn = 2;
   const pawn = game.getPawnInstance(currentPawn);
-  const { x, y } = pawn.get().position;
-  const position = `tile-${x}-${y}`;
+
+  const { x, y, room } = pawn.get().position;
+  const position = room ? room : `tile-${x}-${y}`;
 
   const board = game.getBoard();
   return board.getReachableNodes(position, steps);
 };
 
+const isValidTurn = (tileId, possibleTurns) =>
+  possibleTurns.some((turn) => tileId === turn);
+
 export const serveUpdatePawnPosition = async (c) => {
   const game = c.get("game");
-  const currentNode = await c.req.json();
+  const { currentNodeId, turns } = await c.req.json();
+  const [_, x, y] = currentNodeId.split("-");
+
+  const [nodeId, pos] = currentNodeId.includes("-")
+    ? [`tile-${x}-${y}`, { x, y, room: null }]
+    : [currentNodeId, { x: null, y: null, room: currentNodeId }];
   const currentPawn = 2;
   const pawn = game.getPawnInstance(currentPawn);
-  const updatedPosition = pawn.updatePosition(currentNode);
-  return c.json({ updatedPosition });
+
+  if (isValidTurn(nodeId, turns)) {
+    pawn.updatePosition(pos);
+    return c.json({ status: true });
+  }
+  return c.json({ status: false });
 };

@@ -18,14 +18,15 @@ const movePlayer = (turns) => {
     tile.addEventListener("click", async (e) => {
       e.preventDefault();
       const currentNodeId = e.target.id;
-      const [_, x, y] = currentNodeId.split("-");
+
       await fetch("/update-pawn-position", {
         method: "post",
         headers: {
           "content-type": "application/json",
         },
-        body: JSON.stringify({ x: parseInt(x), y: parseInt(y) }),
+        body: JSON.stringify({ currentNodeId, turns }),
       });
+      globalThis.window.location.reload();
     });
   });
 };
