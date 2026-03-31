@@ -4,11 +4,11 @@ import { Game } from "../../src/models/game.js";
 import { Player } from "../../src/models/player.js";
 import { Pawn } from "../../src/models/pawn.js";
 
-describe("Game", () => {
+describe("GAME", () => {
   let game;
   beforeEach(() => {
-    const scarlet = new Pawn(1, "Scarlet", "0_0", "red", 1);
-    const colonel = new Pawn(2, "Colonel", "0_9", "yellow", 2);
+    const scarlet = new Pawn(1, "Scarlet", "0_0", "red");
+    const colonel = new Pawn(2, "Colonel", "0_9", "yellow");
     game = new Game(
       1,
       {},
@@ -68,13 +68,12 @@ describe("Game", () => {
     it(" => should return all pawns ", () => {
       const pawns = game.getAllPawns();
       const expected = [
-        { id: 1, name: "Scarlet", position: "0_0", color: "red", playerId: 1 },
+        { id: 1, name: "Scarlet", position: "0_0", color: "red" },
         {
           id: 2,
           name: "Colonel",
           position: "0_9",
           color: "yellow",
-          playerId: 2,
         },
       ];
       assertEquals(pawns, expected);

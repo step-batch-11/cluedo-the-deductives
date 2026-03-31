@@ -93,6 +93,17 @@ const markCharacters = (boardConfig) => {
   }
 };
 
+const diceListener = (dice) => {
+  dice.addEventListener("click", async (event) => {
+    event.preventDefault();
+    const { diceValue } = await fetch("/get-dice-value").then((response) =>
+      response.json()
+    );
+
+    alert(diceValue);
+  });
+};
+
 const renderBoard = (boardConfig) => {
   const svg = document.getElementById("board-svg");
 
@@ -100,6 +111,8 @@ const renderBoard = (boardConfig) => {
   svg.appendChild(secretGroup);
 
   markCharacters(boardConfig);
+  const dice = document.querySelector("#dice-button");
+  diceListener(dice);
 };
 
 const createPlayer = (node, player) => {

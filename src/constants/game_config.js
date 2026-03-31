@@ -27,3 +27,29 @@ export const ROOMS = [
   "HALL",
   "LOUNGE",
 ];
+
+export const PAWNS = [{
+  name: "COLONEL MUSTARD",
+  position: { x: 0, y: 17 },
+  color: "yellow",
+}, {
+  name: "MISS SCARLETT",
+  position: { x: 7, y: 24 },
+  color: "red",
+}, {
+  name: "PROFESSOR PLUM",
+  position: { x: 23, y: 19 },
+  color: "violet",
+}, {
+  name: "MRS PEACOCK",
+  position: { x: 23, y: 6 },
+  color: "blue",
+}, {
+  name: "REVEREND GREEN",
+  position: { x: 14, y: 0 },
+  color: "green",
+}, {
+  name: "MRS WHITE",
+  position: { x: 9, y: 0 },
+  color: "white",
+}];
