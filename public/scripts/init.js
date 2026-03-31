@@ -1,4 +1,9 @@
-import { collectAndDeal, createDeck, dealToEnvelope, redirect } from "./new.js";
+import {
+  collectAndDeal,
+  createDeck,
+  dealToEnvelope,
+  redirect,
+} from "./setup.js";
 
 const init = async () => {
   ["deck1", "deck2", "deck3"].forEach((id, i) => createDeck(id, [6, 6, 9][i]));
