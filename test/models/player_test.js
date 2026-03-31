@@ -17,7 +17,7 @@ describe("PLAYER", () => {
       isHost: false,
       hand: [],
       isEliminated: false,
-      pawn: null,
+      pawn: undefined,
       isWon: false,
     };
     assertEquals(actualPlayer, expectedPlayer);
@@ -49,8 +49,8 @@ describe("PLAYER", () => {
   it(" => assign pawn should assign a pawn to the player", () => {
     const pawn = new Pawn(1, "Scarlet", "0_0", "red", 1);
     player.assignPawn(pawn);
-    assertEquals(player.getPawn().name, "Scarlet");
-    assertEquals(player.getPawn().color, "red");
-    assertEquals(player.getPawn().position, "0_0");
+    assertEquals(player.get().pawn.name, "Scarlet");
+    assertEquals(player.get().pawn.color, "red");
+    assertEquals(player.get().pawn.position, "0_0");
   });
 });

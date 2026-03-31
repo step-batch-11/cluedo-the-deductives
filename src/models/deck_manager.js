@@ -39,7 +39,7 @@ export class DeckManager {
 
   distributeCards(players) {
     let inc = 0;
-
+    if (players.length < 3) return;
     while (this.#remainingCards.length !== 0) {
       const card = this.#remainingCards.pop();
       const currentPlayer = players[(inc++) % players.length];

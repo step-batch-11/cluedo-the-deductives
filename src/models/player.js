@@ -25,7 +25,7 @@ export class Player {
       hand: [...this.#hand],
       isHost: this.#isHost,
       isWon: this.#isWon,
-      pawn: this.#pawn,
+      pawn: this.#getPawn(),
     };
   }
 
@@ -45,7 +45,7 @@ export class Player {
     this.#pawn = pawn;
   }
 
-  getPawn() {
-    return this.#pawn.get();
+  #getPawn() {
+    return this.#pawn?.get();
   }
 }

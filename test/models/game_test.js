@@ -11,10 +11,11 @@ describe("GAME", () => {
   beforeEach(() => {
     const scarlet = new Pawn(1, "Scarlet", "0_0", "red");
     const colonel = new Pawn(2, "Colonel", "0_9", "yellow");
+    const plum = new Pawn(3, "pulm", "0_9", "yellow");
     game = new Game(
       1,
       {},
-      [scarlet, colonel],
+      [scarlet, colonel, plum],
       new DeckManager(
         {
           suspects: SUSPECTS,
@@ -31,7 +32,7 @@ describe("GAME", () => {
     it(" => should add pawn to the player", () => {
       const player = new Player(1, "Javed", false);
       game.addPlayer(player);
-      assertEquals(player.getPawn().name, "Colonel");
+      assertEquals(player.get().pawn.name, "pulm");
     });
   });
 
@@ -47,7 +48,7 @@ describe("GAME", () => {
           hand: [],
           isHost: false,
           isWon: false,
-          pawn: new Pawn(),
+          pawn: player.get().pawn,
         },
       ];
       const players = game.getAllPlayers();
@@ -72,6 +73,19 @@ describe("GAME", () => {
     it(" => should change current game state", () => {
       game.changeCurrentState();
       assertEquals(game.getCurrentState().state, "setup");
+    });
+  });
+
+  describe("start game", () => {
+    it(" => should start the game by distribute cards , change the game state and playerOrder", () => {
+      const p1 = new Player(1, "thor", false);
+      const p2 = new Player(2, "hulk", true);
+      const p3 = new Player(3, "deadpool", false);
+      game.addPlayer(p1);
+      game.addPlayer(p2);
+      game.addPlayer(p3);
+      game.start();
+      assertEquals(p1.get().hand.length, 6);
     });
   });
 });
