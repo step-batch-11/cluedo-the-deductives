@@ -36,3 +36,11 @@ export const getGameState = (c) => {
   const currentState = game.getCurrentState();
   return c.json(currentState, 200);
 };
+
+export const updateGameState = (c) => {
+  const game = c.get("game");
+  game.changeCurrentState();
+  const currentState = game.getCurrentState();
+
+  return c.json({ state: currentState.state }, 200);
+};

@@ -157,8 +157,15 @@ const collectAndDeal = (totalPlayers) => {
 };
 
 const redirect = async () => {
-  const res = await fetch("./board.html");
-  if (res.status === 200) globalThis.location.href = "../pages/board.html";
+  const { state } = await fetch("/update-state", { method: "post" }).then((
+    res,
+  ) => res.json())
+    .catch(
+      () => {},
+    );
+  if (state === "running") {
+    globalThis.location.href = "../pages/board.html";
+  }
 };
 
 const init = async () => {
