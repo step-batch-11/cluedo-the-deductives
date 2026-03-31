@@ -14,7 +14,6 @@ export class Player {
     this.#isEliminated = false;
     this.#isWon = false;
     this.#hand = [];
-    this.#pawn = null;
   }
 
   get() {

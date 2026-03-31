@@ -60,7 +60,6 @@ describe("DECK MANAGER", () => {
       deckManager.distributeCards(players);
 
       const hands = players.map((player) => player.get().hand);
-      console.log(players[0].get().hand);
       const uniqueCardsInHands = distinct(hands.flat());
       assertEquals(hands[0].length, 6);
       assertEquals(hands[1].length, 6);

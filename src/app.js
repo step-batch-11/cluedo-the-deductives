@@ -13,9 +13,9 @@ import {
   serveUpdatePawnPosition,
 } from "./handlers/board.js";
 
-export const createApp = (game) => {
+export const createApp = (game, logFn = logger) => {
   const app = new Hono();
-  app.use(logger());
+  app.use(logFn());
 
   app.use(async (c, next) => {
     c.set("game", game);
@@ -27,7 +27,7 @@ export const createApp = (game) => {
   app.get("/roll-and-get-turns", (c) => serveRollAndTurns(c));
   app.get("/total-players", getTotalPlayers);
   app.post("/update-state", updateGameState);
-  app.get("*", serveStatic({ root: "./public" }));
   app.post("/update-pawn-position", serveUpdatePawnPosition);
+  app.get("*", serveStatic({ root: "./public" }));
   return app;
 };
