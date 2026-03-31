@@ -1,23 +1,29 @@
 import { shuffle } from "@std/random";
 
 export class Game {
-  #WAITING = "waiting";
-  #SETUP = "setup";
-  #state;
+  #states = { WAITING: "waiting", SETUP: "setup" };
+  #currentState;
   #id;
   #board;
   #pawns;
   #pawnsToAssign;
   #deck;
   #players;
+  #turnOrder;
+  #shuffle;
   constructor(id, board, pawns, deck, shuffleFn = shuffle) {
-    this.#state = this.#WAITING;
+    this.#currentState = this.#states.WAITING;
     this.#id = id;
     this.#board = board;
     this.#pawns = pawns;
     this.#deck = deck;
     this.#players = {};
+    this.#shuffle = shuffleFn;
     this.#pawnsToAssign = shuffleFn(Object.values(pawns));
+  }
+
+  setTurnOrder() {
+    this.#turnOrder = this.#shuffle(this.#players);
   }
 
   addPlayer(player) {

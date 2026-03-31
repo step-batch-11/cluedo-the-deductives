@@ -22,7 +22,7 @@ export class Player {
       id: this.#id,
       playerName: this.#playerName,
       isEliminated: this.#isEliminated,
-      hand: this.#hand,
+      hand: [...this.#hand],
       isHost: this.#isHost,
       isWon: this.#isWon,
     };
