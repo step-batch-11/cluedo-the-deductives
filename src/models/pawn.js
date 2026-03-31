@@ -25,5 +25,6 @@ export class Pawn {
 
   updatePosition(currentPosition) {
     this.#position = currentPosition;
+    return this.#position;
   }
 }

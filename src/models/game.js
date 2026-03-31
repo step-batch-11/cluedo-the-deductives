@@ -63,6 +63,9 @@ export class Game {
   getBoard() {
     return this.#board;
   }
+  getPawnInstance(id) {
+    return this.#pawns.find((pawn) => pawn?.get().id === id);
+  }
 
   #rollDice(randomGenerator) {
     return Math.ceil(randomGenerator() * 6);

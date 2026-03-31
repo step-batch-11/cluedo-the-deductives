@@ -14,5 +14,4 @@ const main = async () => {
   renderPlayerCards(boardConfig);
   diceListener(dice, p);
 };
-
 globalThis.window.onload = main;
