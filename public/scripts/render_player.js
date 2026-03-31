@@ -19,7 +19,6 @@ export const renderPlayers = (boardConfig) => {
   const allPlayerContainer = document.querySelector(
     "#players-details-container",
   );
-
   const playerTemplate = document.getElementById("player-template");
 
   allPlayerContainer.innerHTML = "";
@@ -27,7 +26,7 @@ export const renderPlayers = (boardConfig) => {
   for (const player of boardConfig.players) {
     const playerClone = playerTemplate.content.cloneNode(true);
 
-    createPlayer(playerClone, player, boardConfig.currentPlayerId);
+    createPlayer(playerClone, player, boardConfig.currentPlayer.id);
     allPlayerContainer.appendChild(playerClone);
   }
 };

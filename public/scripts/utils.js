@@ -68,7 +68,10 @@ export const fetchBoardConfig = (_url) => {
       },
     ],
 
-    currentPlayerId: 1,
+    currentPlayer: {
+      id: 1,
+      hand: ["mustard", "rope", "scarlet", "hall", "dining_room", "dagger"],
+    },
 
     rooms: [
       "kitchen",

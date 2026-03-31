@@ -1,6 +1,7 @@
 import { diceListener } from "./board.js";
 import { renderBoard } from "./render_board.js";
 import { renderPlayers } from "./render_player.js";
+import { renderPlayerCards } from "./render_player_cards.js";
 import { fetchBoardConfig } from "./utils.js";
 
 const main = async () => {
@@ -10,6 +11,7 @@ const main = async () => {
 
   renderBoard(boardConfig);
   renderPlayers(boardConfig);
+  renderPlayerCards(boardConfig);
   diceListener(dice, p);
 };
 
