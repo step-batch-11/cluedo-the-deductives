@@ -6,6 +6,15 @@ const fetchBoardConfig = (_url) => {
       lounge: "conservatory",
       conservatory: "lounge",
     },
+
+    startingPositions: {
+      mustard: { x: 0, y: 17 },
+      scarlet: { x: 7, y: 24 },
+      plum: { x: 23, y: 19 },
+      peacock: { x: 23, y: 6 },
+      green: { x: 14, y: 0 },
+      white: { x: 9, y: 0 },
+    },
   };
 };
 
@@ -41,11 +50,23 @@ const markSecretPassages = (boardConfig) => {
   return secretGroup;
 };
 
+const markCharacters = (boardConfig) => {
+  for (const [char, pos] of Object.entries(boardConfig.startingPositions)) {
+    const tileId = `tile-${pos.x}-${pos.y}`;
+    const tile = document.getElementById(tileId);
+    if (tile) {
+      tile.style.fill = `url(#${char}-pawn)`;
+    }
+  }
+};
+
 const renderBoard = (boardConfig) => {
   const svg = document.getElementById("board-svg");
 
   const secretGroup = markSecretPassages(boardConfig);
   svg.appendChild(secretGroup);
+
+  markCharacters(boardConfig);
 };
 
 const boardConfig = fetchBoardConfig("example.url");
