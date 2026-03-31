@@ -341,6 +341,47 @@
           <text class="room-label" x="350" y="110">Ballroom</text>
           <text class="room-label-cluedo" x="335" y="240">Cluedo</text>
         </g>
+        <g id="secret-passages-group">
+          <rect
+            class="secret-passage"
+            x="180"
+            y="50"
+            data-from="kitchen"
+            data-to="study"
+            data-tooltip="right"
+          >
+          </rect>
+
+          <rect
+            class="secret-passage"
+            x="510"
+            y="375"
+            data-from="study"
+            data-to="kitchen"
+            data-tooltip="left"
+          >
+          </rect>
+
+          <rect
+            class="secret-passage"
+            x="180"
+            y="375"
+            data-from="lounge"
+            data-to="conservatory"
+            data-tooltip="right"
+          >
+          </rect>
+
+          <rect
+            class="secret-passage"
+            x="510"
+            y="50"
+            data-from="conservatory"
+            data-to="lounge"
+            data-tooltip="left"
+          >
+          </rect>
+        </g>
       </svg>
     </div>
     <div id="players-cards-details"></div>
@@ -350,5 +391,6 @@
     <div class="popup">
       <p></p>
     </div>
+    <div id="tooltip" class="tooltip hidden"></div>
   </body>
 </html>

@@ -278,3 +278,45 @@ path,
   pointer-events: none;
   line-height: 1.2;
 }
+
+.secret-passage {
+  width: 10px;
+  height: 10px;
+  fill: purple;
+  opacity: 0.4;
+  cursor: pointer;
+}
+
+.secret-passage:hover {
+  opacity: 0.8;
+}
+.tooltip {
+  position: absolute;
+  padding: 6px 10px;
+  background: black;
+  color: white;
+  font-size: 12px;
+  border-radius: 4px;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+
+.hidden {
+  opacity: 0;
+}
+
+.tooltip-top {
+  transform: translate(-50%, -120%);
+}
+
+.tooltip-bottom {
+  transform: translate(-50%, 20%);
+}
+
+.tooltip-left {
+  transform: translate(-120%, -50%);
+}
+
+.tooltip-right {
+  transform: translate(20%, -50%);
+}

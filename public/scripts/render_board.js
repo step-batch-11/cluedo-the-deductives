@@ -60,43 +60,42 @@ const placeCharacters = (boardConfig) => {
   }
 };
 
-const highlightSecretPassages = (boardConfig) => {
-  const secretGroup = document.createElementNS(
-    "http://www.w3.org/2000/svg",
-    "g",
-  );
-  secretGroup.setAttribute("class", "secret-passages-group");
+const hideSecretPassage = (tooltip) => {
+  tooltip.classList.add("hidden");
+};
 
-  const secretPositions = {
-    kitchen: { x: 180, y: 50 },
-    study: { x: 510, y: 375 },
-    lounge: { x: 180, y: 375 },
-    conservatory: { x: 510, y: 50 },
-  };
+const previewSecretPassage = (p, tooltip) => {
+  const to = p.dataset.to;
+  const direction = p.dataset.tooltip;
 
-  for (const [fromRoom, toRoom] of Object.entries(boardConfig.secretPassages)) {
-    const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
-    rect.setAttribute("x", secretPositions[fromRoom].x);
-    rect.setAttribute("y", secretPositions[fromRoom].y);
-    rect.setAttribute("class", "secret-passage");
+  const formatted = to.charAt(0).toUpperCase() + to.slice(1);
+  tooltip.textContent = `Go to ${formatted}`;
+  tooltip.className = `tooltip tooltip-${direction}`;
 
-    const title = document.createElementNS(
-      "http://www.w3.org/2000/svg",
-      "title",
-    );
-    title.textContent = toRoom.charAt(0).toUpperCase() + toRoom.slice(1);
-    rect.appendChild(title);
+  const rect = p.getBoundingClientRect();
 
-    secretGroup.appendChild(rect);
-  }
-  return secretGroup;
+  tooltip.style.left = `${rect.left + rect.width / 2}px`;
+  tooltip.style.top = `${rect.top + rect.height / 2}px`;
+
+  tooltip.classList.remove("hidden");
+};
+
+const setupSecretPassageEvents = () => {
+  const tooltip = document.getElementById("tooltip");
+  const passages = document.querySelectorAll(".secret-passage");
+
+  passages.forEach((p) => {
+    p.addEventListener("mouseenter", (_e) => {
+      previewSecretPassage(p, tooltip);
+    });
+
+    p.addEventListener("mouseleave", () => {
+      hideSecretPassage(tooltip);
+    });
+  });
 };
 
 export const renderBoard = (boardConfig) => {
-  const svg = document.getElementById("board-svg");
-
-  const secretGroup = highlightSecretPassages(boardConfig);
-  svg.appendChild(secretGroup);
-
+  setupSecretPassageEvents();
   placeCharacters(boardConfig);
 };
