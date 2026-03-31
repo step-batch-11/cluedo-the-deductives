@@ -170,7 +170,7 @@ const init = async () => {
     .catch((e) => console.log(e));
 
   dealToEnvelope(() => collectAndDeal(totalPlayers));
-  setTimeout(redirect, 6000);
+  setTimeout(redirect, 7000);
 };
 
 globalThis.onload = init;
