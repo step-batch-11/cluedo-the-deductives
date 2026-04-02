@@ -53,20 +53,23 @@ export class Game {
     }
 
     this.#turn = new Turn(this.#activePlayer);
+
     return this.#activePlayer.getPlayerData();
   }
 
   #findPlayer(playerId) {
-    return this.#players[playerId];
+    return this.#players[playerId]?.getPlayerData();
   }
 
-  getState(playerId) {
+  getState() {
+    const playerId = this.#activePlayer?.getPlayerData().id;
     return {
       state: this.#gameState,
       players: this.#getAllPlayers(),
       hand: this.#findPlayer(playerId)?.hand,
       pawns: this.#getAllPawns(),
       activePlayer: this.#activePlayer?.getPlayerData(),
+      canRoll: this.#isRollAllowed(playerId),
     };
   }
 
@@ -129,5 +132,10 @@ export class Game {
   #distributeCards() {
     const players = Object.values(this.#players);
     this.#deck.distributeCards(players);
+  }
+
+  #isRollAllowed(playerId) {
+    return playerId === this.#activePlayer?.getPlayerData().id &&
+      !this.#turn?.getIsDiceRolled();
   }
 }

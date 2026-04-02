@@ -14,9 +14,11 @@ export const getCharacterColor = (char) => {
   return colors[char] || "white";
 };
 
-const parsePlayersData = (config) => {
-  const { players } = config;
+const toId = (data) => data.toLowerCase().replace(" ", "_");
+export const toSentenceCase = (data) =>
+  data.charAt(0).toUpperCase() + data.slice(1);
 
+const parsePlayersData = (players) => {
   return players.map((player) => ({
     id: player.id,
     name: player.name,
@@ -24,13 +26,7 @@ const parsePlayersData = (config) => {
   }));
 };
 
-export const toId = (data) => data.toLowerCase().replace(" ", "_");
-export const toSentenceCase = (data) =>
-  data.charAt(0).toUpperCase() + data.slice(1);
-
-const parsePawnsData = (config) => {
-  const { pawns } = config;
-
+const parsePawnsData = (pawns) => {
   return pawns.map(({ position, name }) => ({
     pos: {
       x: position?.x,
@@ -41,25 +37,18 @@ const parsePawnsData = (config) => {
   }));
 };
 
-const getCurrentPlayerHand = (currentPlayerId, players) => {
-  const currentPlayer = players.filter(
-    (player) => player.id === currentPlayerId,
-  )[0];
-
-  return currentPlayer?.hand;
-};
-
 export const fetchGameConfig = async (url) => {
   const gameContext = await fetch(url).then((data) => data.json());
 
   return {
     state: gameContext.state,
-    players: parsePlayersData(gameContext),
-    pawns: parsePawnsData(gameContext),
+    players: parsePlayersData(gameContext.players),
+    pawns: parsePawnsData(gameContext.pawns),
     currentPlayer: {
-      id: 1,
-      hand: getCurrentPlayerHand(1, gameContext.players),
+      id: gameContext.activePlayer.id,
+      hand: gameContext.hand,
     },
+    canRoll: gameContext.canRoll,
   };
 };
 

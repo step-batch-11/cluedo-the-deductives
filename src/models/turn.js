@@ -9,6 +9,10 @@ export class Turn {
     this.#diceValue = [];
   }
 
+  getIsDiceRolled() {
+    return this.#isDiceRolled;
+  }
+
   rollDice(randomGenerator, ceilFn) {
     if (this.#isDiceRolled) throw new Error("Player already rolled the dice");
 

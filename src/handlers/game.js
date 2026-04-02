@@ -27,6 +27,5 @@ export const updateGameState = (c) => {
 export const updateTurn = (c) => {
   const game = c.get("game");
   const currentPlayer = game.updateTurn();
-
   return c.json({ currentPlayer }, 200);
 };

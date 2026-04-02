@@ -8,6 +8,7 @@ export const renderPlayerCards = (playerHand) => {
   const playerCardsContainer = document.getElementById("players-cards-details");
   const cardTemplate = document.getElementById("card-template");
   if (!playerHand || playerHand.length <= 0) return;
+  playerCardsContainer.replaceChildren();
   for (const card of playerHand) {
     const cardClone = cardTemplate.content.cloneNode(true);
     createCard(cardClone, card);
