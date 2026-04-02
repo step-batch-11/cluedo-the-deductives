@@ -5,3 +5,8 @@ deno lint
 deno fmt --check
 deno task test
 deno task coverage
+
+if ! git diff --quiet; then
+  echo "You have unstaged changes."
+  exit 1
+fi

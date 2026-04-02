@@ -15,6 +15,7 @@ export const getCharacterColor = (char) => {
 };
 
 export const toId = (data) => data.toLowerCase().replace(" ", "_");
+
 export const toSentenceCase = (data) =>
   data.charAt(0).toUpperCase() + data.slice(1);
 

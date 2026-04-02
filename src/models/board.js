@@ -141,6 +141,5 @@ export class Board {
 
   toggleIsOccupied(nodeId) {
     this.#graph[nodeId].isOccupied = !this.#graph[nodeId].isOccupied;
-    return this.#graph[nodeId].isOccupied;
   }
 }

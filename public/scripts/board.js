@@ -1,12 +1,17 @@
 import { displayAccusationPopup } from "./accusation.js";
 import { displayPopup } from "./utils.js";
 
-const hightlightTiles = (tiles) => {
+const highlightTiles = (tiles) => {
   tiles.forEach((turn) => {
     const tile = document.querySelector(`#${turn}`);
     tile.classList.add("highlight");
     tile.parentNode.appendChild(tile);
   });
+};
+
+const getHighlightPath = () => {
+  const reachableNodes = localStorage.getItem("reachableNodes") ?? "[]";
+  return JSON.parse(reachableNodes);
 };
 
 const movePlayer = (tiles) => {
@@ -22,23 +27,30 @@ const movePlayer = (tiles) => {
         body: JSON.stringify({ currentNodeId, turns: tiles }),
       });
       globalThis.window.location.reload();
+      localStorage.clear();
     });
   });
 };
+
+const fetchReachableNodes = () =>
+  fetch("/get-reachable-nodes")
+    .then((response) => response.json());
+
+const fetchRollDice = () =>
+  fetch("/roll", { method: "POST" })
+    .then((response) => response.json());
 
 const handleDiceClick = async (event, dice) => {
   event.preventDefault();
   dice.setAttribute("disabled", true);
 
-  const parsedResponse = await fetch("/roll-and-get-turns")
-    .then((response) => response.json());
+  const { diceValue } = await fetchRollDice();
+  displayPopup(`dice value is ${diceValue}`);
 
-  const { diceValue, turns } = parsedResponse;
-  const message = `dice value is ${diceValue}`;
-
-  displayPopup(message);
-  hightlightTiles(turns);
-  movePlayer(turns);
+  const { reachableNodes } = await fetchReachableNodes();
+  localStorage.setItem("reachableNodes", JSON.stringify(reachableNodes));
+  highlightTiles(reachableNodes);
+  movePlayer(reachableNodes);
 };
 
 const diceListener = (dice) => {
@@ -59,6 +71,7 @@ const handlePass = async (event) => {
   if (res.status === 200) {
     const { currentPlayer } = await res.json();
     displayPopup(`${currentPlayer.name} turns!`);
+    localStorage.clear();
   }
 };
 
@@ -73,20 +86,26 @@ const passBtnListener = (passBtn) => {
   passBtn.addEventListener("click", handler, { once: true });
 };
 
-export const accuseBtnListener = (accuseBtn) => {
-  accuseBtn.addEventListener("click", (event) => {
-    event.preventDefault();
-    displayAccusationPopup();
-  });
-};
-
 export const renderActions = (boardConfig) => {
   const dice = document.querySelector("#dice-button");
   const passBtn = document.querySelector("#pass-button");
-
   const attributeFn = !boardConfig.canRoll ? "setAttribute" : "removeAttribute";
   dice[attributeFn]("disabled", "");
 
   diceListener(dice);
   passBtnListener(passBtn);
+
+  const path = getHighlightPath();
+  if (path.length) {
+    passBtn.setAttribute("disabled", "");
+    highlightTiles(path);
+    movePlayer(path);
+  }
+};
+
+export const accuseBtnListener = (accuseBtn) => {
+  accuseBtn.addEventListener("click", (event) => {
+    event.preventDefault();
+    displayAccusationPopup();
+  });
 };

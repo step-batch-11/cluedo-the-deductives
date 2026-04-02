@@ -23,6 +23,26 @@ export const createGameInstance = () => {
   return game;
 };
 
-export const getPlayerId = (_c) => {
-  return 1;
+export const toggleIsOccupied = (nodeId, game) => {
+  if (nodeId.includes("-")) {
+    game.toggleIsOccupied(nodeId);
+  }
+};
+
+export const getPosition = (pawn) => {
+  const { x, y, room } = pawn.position;
+  const position = room ? room : `tile-${x}-${y}`;
+  return position;
+};
+
+export const isValidTurn = (tileId, possibleTurns) => {
+  return possibleTurns.some((turn) => tileId === turn);
+};
+
+export const parseNode = (node) => {
+  const [_, x, y] = node.split("-");
+
+  return node.includes("-")
+    ? [`tile-${x}-${y}`, { x, y, room: null }]
+    : [node, { x: null, y: null, room: node }];
 };

@@ -148,4 +148,16 @@ export class Game {
   addSuspect(suspectCombination) {
     this.#turn.addSuspectCombination(suspectCombination);
   }
+
+  getDiceValue() {
+    return this.#turn?.getDiceValue();
+  }
+
+  toggleIsOccupied(nodeId) {
+    this.#board.toggleIsOccupied(nodeId);
+  }
+
+  getReachableNodes(position, steps) {
+    return this.#board.getReachableNodes(position, steps);
+  }
 }

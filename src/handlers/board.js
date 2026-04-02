@@ -1,46 +1,42 @@
-import { getPlayerId } from "../utils/game.js";
+import {
+  getPosition,
+  isValidTurn,
+  parseNode,
+  toggleIsOccupied,
+} from "../utils/game.js";
 
-export const serveRollAndTurns = (c, randomFn, ceilFn) => {
+export const serveRollDice = (c, randomFn, ceilFn) => {
   const game = c.get("game");
-  const playerId = getPlayerId(c);
-
   const diceValue = game.getRolledNumber(randomFn, ceilFn);
-  const turns = getReachableTiles(game, playerId, diceValue);
-
-  return c.json({ diceValue, turns });
+  return c.json({ diceValue });
 };
 
-const getReachableTiles = (game, playerId, steps) => {
-  const activePlayer = game.getState(playerId).activePlayer;
+export const serveGetReachableNodes = (c) => {
+  const game = c.get("game");
+  const activePlayer = game.getState().activePlayer;
   const pawn = activePlayer?.pawn;
 
-  const { x, y, room } = pawn.position;
-  const position = room ? room : `tile-${x}-${y}`;
+  const position = getPosition(pawn);
 
-  const board = game.getBoard();
-  return board.getReachableNodes(position, steps);
-};
-
-const isValidTurn = (tileId, possibleTurns) => {
-  return possibleTurns.some((turn) => tileId === turn);
+  const steps = game.getDiceValue();
+  const reachableNodes = game.getReachableNodes(position, steps);
+  toggleIsOccupied(position, game);
+  return c.json({ reachableNodes });
 };
 
 export const movePawnHanlder = async (c) => {
   const game = c.get("game");
   const { currentNodeId, turns } = await c.req.json();
-  const [_, x, y] = currentNodeId.split("-");
-
-  const [nodeId, pos] = currentNodeId.includes("-")
-    ? [`tile-${x}-${y}`, { x, y, room: null }]
-    : [currentNodeId, { x: null, y: null, room: currentNodeId }];
-  const playerId = getPlayerId(c);
-  const activePlayer = game.getState(playerId).activePlayer;
+  const [nodeId, pos] = parseNode(currentNodeId);
+  const activePlayer = game.getState().activePlayer;
   const currentPawn = activePlayer?.pawn?.id;
   const pawn = game.getPawnInstance(currentPawn);
 
   if (isValidTurn(nodeId, turns)) {
     pawn.updatePosition(pos);
+    toggleIsOccupied(currentNodeId, game);
     return c.json({ status: true });
   }
+
   return c.json({ status: false });
 };

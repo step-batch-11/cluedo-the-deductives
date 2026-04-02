@@ -1,5 +1,3 @@
-import { getPlayerId } from "../utils/game.js";
-
 export const startGame = (c) => {
   const game = c.get("game");
   game.start();
@@ -8,8 +6,7 @@ export const startGame = (c) => {
 
 export const getGameState = (c) => {
   const game = c.get("game");
-  const playerId = getPlayerId(c);
-  const gameState = game.getState(playerId);
+  const gameState = game.getState();
   return c.json(gameState, 200);
 };
 
@@ -18,8 +15,7 @@ export const updateGameState = (c) => {
   game.changeCurrentState();
   game.updateTurn();
 
-  const playerId = getPlayerId(c);
-  const currentState = game.getState(playerId);
+  const currentState = game.getState();
 
   return c.json({ state: currentState.state }, 200);
 };

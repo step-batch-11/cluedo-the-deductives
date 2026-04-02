@@ -20,16 +20,27 @@ describe("BOARD", () => {
     });
   });
 
-  describe("GET /roll-and-get-turns", () => {
-    it(" => should get dice value and reachable positions", async () => {
-      await app.request("/start-game", { method: "post" });
+  describe("POST /roll", () => {
+    it(" => should get dice value", async () => {
+      await app.request("/start-game", { method: "POST" });
 
-      await app.request("/update-state", { method: "post" });
-      const res = await app.request("/roll-and-get-turns");
+      await app.request("/update-state", { method: "POST" });
+      const res = await app.request("/roll", { method: "POST" });
       const body = await res.json();
 
       assertEquals(res.status, 200);
       assertEquals(body.diceValue, 12);
+    });
+  });
+  describe("GET /get-reachable-nodes", () => {
+    it(" => should get dice value and reachable positions", async () => {
+      await app.request("/start-game", { method: "post" });
+
+      await app.request("/update-state", { method: "post" });
+      await app.request("/roll", { method: "post" });
+      const res = await app.request("/get-reachable-nodes");
+
+      assertEquals(res.status, 200);
     });
   });
 

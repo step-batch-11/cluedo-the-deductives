@@ -381,7 +381,7 @@ path,
 .highlight {
   stroke: red;
   stroke-width: 1;
-  animation: pulse 1.5s infinite ease-in-out;
+  animation: pulse 1s infinite ease-in-out;
 }
 
 @keyframes pulse {
