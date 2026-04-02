@@ -29,9 +29,9 @@ const renderPawnOnTile = (pawnId, x, y) => {
   const tile = document.getElementById(`tile-${x}-${y}`);
   if (tile) {
     tile.style.fill = `url(#${pawnId}_pawn)`;
+    tile.dataset.occupiedBy = pawnId;
   }
 };
-
 export const placeCharacters = (boardConfig) => {
   const roomRegistry = {};
 

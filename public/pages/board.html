@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Cluedo Board</title>
     <link rel="stylesheet" href="/styles/board.css" />
+    <link rel="stylesheet" href="/styles/suspicion.css">
     <script type="module" src="/scripts/script.js"></script>
   </head>
 
@@ -467,6 +468,22 @@
     <div id="players-cards-details"></div>
 
     <div class="action-buttons">
+      <button id="suspicion-button">🔍 Suspicion</button>
+
+      <div id="weapon-popup" class="weapon-popup hidden"></div>
+
+      <div id="suspicion-modal" class="modal hidden">
+        <div class="modal-content">
+          <h2>🕵️ Suspicion</h2>
+          <p id="suspicion-text"></p>
+          <p id="suspicion-status"></p>
+
+          <div id="revealed-card" class="revealed-card hidden"></div>
+
+          <button id="close-modal">OK</button>
+        </div>
+      </div>
+
       <button id="dice-button">🎲</button>
       <button id="pass-button">&gt;&gt;</button>
     </div>
