@@ -14,6 +14,7 @@ const createOption = (option, optionLabel) => {
   input.name = optionLabel;
   input.value = toId(option);
   input.id = `accuse-${toId(option)}`;
+
   label.textContent = toSentenceCase(option);
   label.setAttribute("for", input.id);
   return optionElement;
@@ -28,6 +29,16 @@ const renderOptions = (optionsToRender) => {
   });
 };
 
+const attachClosePopupListener = () => {
+  const accusationBackGround = document.getElementById("accusation-popup");
+
+  accusationBackGround.addEventListener("click", (e) => {
+    if (e.target.id === "accusation-popup") {
+      accusationBackGround.remove();
+    }
+  });
+};
+
 const renderAccusationForm = (suspects, weapons, rooms) => {
   const accusationTemplateClone = getTemplateClone("accusation-template");
   const accusationPopup = accusationTemplateClone.querySelector(
@@ -36,6 +47,7 @@ const renderAccusationForm = (suspects, weapons, rooms) => {
 
   const body = document.querySelector("body");
   body.appendChild(accusationPopup);
+  attachClosePopupListener();
   renderOptions([suspects, weapons, rooms]);
 };
 

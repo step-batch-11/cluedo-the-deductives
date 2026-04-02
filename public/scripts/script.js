@@ -28,7 +28,7 @@ const main = async () => {
         renderPlayerCards(boardConfig.currentPlayer.hand);
         renderActions(boardConfig);
       });
-  }, 100);
+  }, 1000);
 };
 
 globalThis.window.onload = main;

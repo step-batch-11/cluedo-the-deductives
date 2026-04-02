@@ -73,19 +73,20 @@ const passBtnListener = (passBtn) => {
   passBtn.addEventListener("click", handler, { once: true });
 };
 
-export const renderActions = (boardConfig) => {
-  const dice = document.querySelector("#dice-button");
-  const passBtn = document.querySelector("#pass-button");
-  const attributeFn = !boardConfig.canRoll ? "setAttribute" : "removeAttribute";
-  dice[attributeFn]("disabled", "");
-
-  diceListener(dice);
-  passBtnListener(passBtn);
-};
-
 export const accuseBtnListener = (accuseBtn) => {
   accuseBtn.addEventListener("click", (event) => {
     event.preventDefault();
     displayAccusationPopup();
   });
+};
+
+export const renderActions = (boardConfig) => {
+  const dice = document.querySelector("#dice-button");
+  const passBtn = document.querySelector("#pass-button");
+
+  const attributeFn = !boardConfig.canRoll ? "setAttribute" : "removeAttribute";
+  dice[attributeFn]("disabled", "");
+
+  diceListener(dice);
+  passBtnListener(passBtn);
 };
