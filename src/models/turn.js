@@ -30,7 +30,8 @@ export class Turn {
 
   canSuspect() {
     const pawnLocation = this.#player.getPlayerData().pawn.position;
-    return pawnLocation.room !== undefined && !this.#hadSuspected;
+    console.log(pawnLocation.room);
+    return !!pawnLocation.room && !this.#hadSuspected;
   }
 
   addSuspectCombination(suspectCombination) {

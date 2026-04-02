@@ -1,7 +1,7 @@
-const suspicionState = {
+const SUSPICION_STATE = {
   selectedSuspect: null,
   selectedWeapon: null,
-  currentRoom: "KITCHEN",
+  currentRoom: null,
   hasMadeSuspicion: false,
 };
 
@@ -22,6 +22,7 @@ const showModal = (data) => {
   const modalContent = modal.querySelector(".modal-content");
   const suspicionTemp = document.querySelector("#suspicion-model-temp");
   const suspicionClone = suspicionTemp.content.cloneNode(true);
+
   suspicionClone.querySelector("#card-suspect .card-value").textContent =
     data.suspect;
   suspicionClone.querySelector("#card-weapon .card-value").textContent =
@@ -72,9 +73,9 @@ const mockFetchSuspicion = (data) => {
 
 const submitSuspicion = async () => {
   const data = {
-    suspect: suspicionState.selectedSuspect,
-    weapon: suspicionState.selectedWeapon,
-    room: suspicionState.currentRoom,
+    suspect: SUSPICION_STATE.selectedSuspect,
+    weapon: SUSPICION_STATE.selectedWeapon,
+    room: SUSPICION_STATE.currentRoom,
   };
 
   showModal(data);
@@ -83,11 +84,11 @@ const submitSuspicion = async () => {
 
   showResult(data, result);
 
-  suspicionState.hasMadeSuspicion = true;
+  SUSPICION_STATE.hasMadeSuspicion = true;
 };
 
 const selectWeapon = (weapon) => {
-  suspicionState.selectedWeapon = weapon;
+  SUSPICION_STATE.selectedWeapon = weapon;
 
   weaponPopup.classList.add("hidden");
 
@@ -115,9 +116,13 @@ const showWeaponPopup = (x, y) => {
   weaponPopup.classList.remove("hidden");
 };
 
-const removePawnHighlight = () => {
-  const pawns = document.querySelectorAll(".highlight-suspect");
-  pawns.forEach((p) => p.classList.remove("highlight-suspect"));
+export const removePawnHighlight = () => {
+  const pawns = document.querySelectorAll("[data-occupied-by]");
+
+  pawns.forEach((p) => {
+    p.classList.remove("highlight-suspect");
+    p.removeEventListener("click", onPawnSelect);
+  });
 };
 
 const onPawnSelect = (e) => {
@@ -125,7 +130,7 @@ const onPawnSelect = (e) => {
 
   if (!pawnElement) return;
 
-  suspicionState.selectedSuspect = pawnElement.dataset.occupiedBy;
+  SUSPICION_STATE.selectedSuspect = pawnElement.dataset.occupiedBy;
 
   removePawnHighlight();
 
@@ -141,14 +146,13 @@ const highlightPawns = (pawns) => {
   });
 };
 
-const startSuspicion = () => {
-  if (suspicionState.hasMadeSuspicion) {
-    alert("You already made a suspicion this turn");
-    return;
+const startSuspicion = ({ location }) => {
+  if (SUSPICION_STATE.hasMadeSuspicion) {
+    return removePawnHighlight();
   }
 
+  SUSPICION_STATE.currentRoom = location.room;
   const pawns = document.querySelectorAll("[data-occupied-by]");
-
   highlightPawns(pawns);
 };
 
@@ -156,7 +160,10 @@ document.getElementById("close-modal").addEventListener("click", () => {
   modal.classList.add("hidden");
 });
 
-export const suspicionBtnListener = () => {
-  const suspicionBtn = document.getElementById("suspicion-button");
-  suspicionBtn.addEventListener("click", startSuspicion);
+export const suspicionBtnListener = ({ canSuspect, currentPlayer }) => {
+  if (canSuspect) {
+    startSuspicion(currentPlayer);
+  } else {
+    removePawnHighlight();
+  }
 };

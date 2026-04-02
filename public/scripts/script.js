@@ -9,10 +9,9 @@ import { displayPopup, fetchGameConfig } from "./utils.js";
 const main = async () => {
   const boardConfig = await fetchGameConfig("/game-state");
   const accuseBtn = document.querySelector("#accuse-button");
-  console.log(accuseBtn);
 
   renderBoard(boardConfig);
-  suspicionBtnListener();
+
   accuseBtnListener(accuseBtn);
 
   const alreadyShown = sessionStorage.getItem("gameStartedPopup");
@@ -28,6 +27,7 @@ const main = async () => {
         renderPlayers(boardConfig);
         renderPlayerCards(boardConfig.currentPlayer.hand);
         renderActions(boardConfig);
+        suspicionBtnListener(boardConfig);
       });
   }, 1000);
 };

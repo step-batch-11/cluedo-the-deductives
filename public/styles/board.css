@@ -190,8 +190,8 @@ path,
 }
 
 #current-player {
-  border-color: var(--gold);
-  background: #f6ead2;
+  border-color: var();
+  background: gold;
 }
 
 .player-icon {

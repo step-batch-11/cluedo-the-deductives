@@ -63,6 +63,8 @@ export class Game {
 
   getState() {
     const playerId = this.#activePlayer?.getPlayerData().id;
+    const canSuspect = this.#turn?.canSuspect();
+
     return {
       state: this.#gameState,
       players: this.#getAllPlayers(),
@@ -70,7 +72,7 @@ export class Game {
       pawns: this.#getAllPawns(),
       activePlayer: this.#activePlayer?.getPlayerData(),
       canRoll: this.#isRollAllowed(playerId),
-      canSuspect: this.#turn?.canSuspect(),
+      canSuspect,
     };
   }
 

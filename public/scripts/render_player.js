@@ -23,6 +23,8 @@ export const renderPlayers = (boardConfig) => {
   allPlayerContainer.innerHTML = "";
 
   for (const player of boardConfig.players) {
+    console.log(player);
+
     const playerClone = playerTemplate.content.cloneNode(true);
 
     createPlayer(playerClone, player, boardConfig.currentPlayer.id);

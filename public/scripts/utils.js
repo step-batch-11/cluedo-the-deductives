@@ -40,7 +40,6 @@ const parsePawnsData = (pawns) => {
 
 export const fetchGameConfig = async (url) => {
   const gameContext = await fetch(url).then((data) => data.json());
-
   return {
     state: gameContext.state,
     players: parsePlayersData(gameContext.players),
@@ -48,8 +47,10 @@ export const fetchGameConfig = async (url) => {
     currentPlayer: {
       id: gameContext.activePlayer.id,
       hand: gameContext.hand,
+      location: gameContext.activePlayer.pawn.position,
     },
     canRoll: gameContext.canRoll,
+    canSuspect: gameContext.canSuspect,
   };
 };
 
