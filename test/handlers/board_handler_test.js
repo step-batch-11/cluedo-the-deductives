@@ -115,10 +115,9 @@ describe("BOARD", () => {
   });
   it(" => should give all possible reachable positions: from a room(board config)", () => {
     const board = boardConfig;
-    const smallBoard = new Board({
+    const smallBoard = Board.create({
       ...board,
     });
-    smallBoard.buildBoard();
     assertEquals(smallBoard.getReachableNodes("kitchen", 1), ["tile-4-6"]);
   });
 });

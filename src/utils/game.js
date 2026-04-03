@@ -12,7 +12,7 @@ const createPawns = () =>
   );
 
 export const createGameInstance = () => {
-  const board = new Board(boardConfig);
+  const board = Board.create(boardConfig);
   const pawns = createPawns();
   const deck = new DeckManager({
     suspects: SUSPECTS,

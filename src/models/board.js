@@ -2,7 +2,6 @@ import { isInRange, isInsideBoundary } from "../utils/board_utils.js";
 
 export class Board {
   #config;
-  #tiles;
   #graph;
   #secretPassages;
 
@@ -10,7 +9,6 @@ export class Board {
     this.#config = boardConfig;
     this.#secretPassages = boardConfig.secretPassages;
     this.#graph = {};
-    this.buildBoard();
   }
 
   #getTileId(x, y) {
@@ -111,10 +109,16 @@ export class Board {
     }
   }
 
-  buildBoard() {
+  #build() {
     this.#buildRooms(Object.values(this.#config.rooms));
     this.#buildTiles(this.#config.size.height, this.#config.size.width);
     this.#addAdjacents();
+  }
+
+  static create(boardConfig) {
+    const board = new Board(boardConfig);
+    board.#build();
+    return board;
   }
 
   getBoardState() {
