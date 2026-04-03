@@ -64,7 +64,25 @@ describe("game handler", () => {
   });
 
   describe("POST /accuse", () => {
-    it("=> should update the player turn", async () => {
+    it("=> should fail if invalid accusation combination is provided", async () => {
+      await app.request("/start-game", { method: "post" });
+      const res = await app.request("/accuse", {
+        method: "post",
+        body: JSON.stringify({
+          weapon: WEAPONS[0],
+          room: ROOMS[0],
+        }),
+      });
+      const body = await res.json();
+
+      assertEquals(res.status, 400);
+      assertEquals(body.error, "Invalid Accusation Combination");
+    });
+
+    it("=> should accuse the murder combination", async () => {
+      await app.request("/start-game", { method: "post" });
+      await app.request("/update-state", { method: "post" });
+
       const res = await app.request("/accuse", {
         method: "post",
         body: JSON.stringify({
@@ -74,7 +92,6 @@ describe("game handler", () => {
         }),
       });
       const body = await res.json();
-
       assertEquals(res.status, 200);
       assertEquals(body.isCorrect, false);
     });

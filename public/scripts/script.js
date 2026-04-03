@@ -20,11 +20,13 @@ const main = async () => {
     sessionStorage.setItem("gameStartedPopup", "true");
   }
 
+  const playerCardsContainer = document.getElementById("players-cards-details");
+
   setInterval(() => {
     fetchGameConfig("/game-state")
       .then((boardConfig) => {
         renderPlayers(boardConfig);
-        renderPlayerCards(boardConfig.currentPlayer.hand);
+        renderPlayerCards(boardConfig.currentPlayer.hand, playerCardsContainer);
         renderActions(boardConfig);
         suspicionBtnListener(boardConfig);
       });

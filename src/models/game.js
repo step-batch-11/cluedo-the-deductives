@@ -187,6 +187,7 @@ export class Game {
       murderCombination,
       playerCombination,
     );
+    this.updateTurn();
     return { isCorrect, murderCombination };
   }
 

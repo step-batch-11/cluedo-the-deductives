@@ -1,7 +1,8 @@
-import { sendRequest, toId, toSentenceCase } from "./utils.js";
+import { createCard } from "./render_player_cards.js";
+import { displayPopup, sendRequest, toId, toSentenceCase } from "./utils.js";
 
 const getTemplateClone = (templateId) => {
-  const template = document.querySelector(`#${templateId}`);
+  const template = document.getElementById(templateId);
   return template.content.cloneNode(true);
 };
 
@@ -29,8 +30,37 @@ const renderOptions = (optionsToRender) => {
   });
 };
 
+const displayMurderCombination = (combination) => {
+  const envelope = document.querySelector("#envelop");
+
+  const cards = Object.values(combination).map((name) => {
+    const cardClone = getTemplateClone("card-template");
+
+    createCard(cardClone, name, "envelop-card");
+    return cardClone;
+  });
+  envelope.append(...cards);
+};
+
+const handleAccusationSubmission = async (combination) => {
+  const res = await sendRequest({
+    url: "/accuse",
+    method: "post",
+    body: combination,
+  });
+
+  displayMurderCombination(res.murderCombination);
+};
+
+const closePopup = (popup) => {
+  setTimeout(() => {
+    popup.remove();
+  }, 4000);
+};
+
 const attachSubmitAccusationListener = () => {
   const form = document.querySelector("form");
+  const accusationBackGround = document.getElementById("accusation-popup");
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -38,14 +68,15 @@ const attachSubmitAccusationListener = () => {
     const accusationDetails = Object.fromEntries(formdata.entries());
     const { suspects: suspect, weapons: weapon, rooms: room } =
       accusationDetails;
+
     if (Object.keys(accusationDetails).length === 3) {
-      await sendRequest({
-        url: "/accuse",
-        method: "post",
-        body: { suspect, weapon, room },
-      });
+      await handleAccusationSubmission({ suspect, weapon, room });
+    } else {
+      displayPopup("Incomplete combination");
     }
+
     form.reset();
+    closePopup(accusationBackGround);
   });
 };
 

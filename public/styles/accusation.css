@@ -74,4 +74,20 @@ input[type="radio"]:checked + label {
   height: 600px;
   background-color: black;
   border-radius: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.envelop-card {
+  width: 150px;
+  height: 200px;
+  background: linear-gradient(160deg, #f8f0dc, #e8d8a4);
+  border: 1px solid #b89040;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: rotate(270deg);
 }
