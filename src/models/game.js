@@ -174,6 +174,11 @@ export class Game {
     );
   }
 
+  #finishGame() {
+    this.changeCurrentState();
+    this.#activePlayer.setWon();
+  }
+
   accuse({ suspect, weapon, room }) {
     if (!(suspect && weapon && room)) {
       throw new Error("Invalid Accusation Combination");
@@ -185,7 +190,13 @@ export class Game {
       murderCombination,
       playerCombination,
     );
+
     this.updateTurn();
+
+    if (isCorrect) {
+      this.#finishGame();
+    }
+
     return { isCorrect, murderCombination };
   }
 

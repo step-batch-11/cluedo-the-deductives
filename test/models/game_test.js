@@ -269,9 +269,7 @@ describe("GAME", () => {
         weapon: WEAPONS[0],
         room: ROOMS[0],
       };
-      const { isCorrect, murderCombination } = game.accuse(
-        accusingCombination,
-      );
+      const { isCorrect, murderCombination } = game.accuse(accusingCombination);
 
       assertEquals(isCorrect, false);
       assertEquals(murderCombination, {
