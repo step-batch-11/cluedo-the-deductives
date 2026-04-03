@@ -25,3 +25,13 @@ export const updateTurn = (c) => {
   const currentPlayer = game.updateTurn();
   return c.json({ currentPlayer }, 200);
 };
+
+export const handleAccusation = async (c) => {
+  const accusationDetails = await c.req.json();
+  const game = c.get("game");
+  const { isCorrect, murderCombination } = game.accuse(
+    accusationDetails,
+  );
+
+  return c.json({ isCorrect, murderCombination });
+};

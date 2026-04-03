@@ -71,3 +71,16 @@ export const displayPopup = (message) => {
     p.textContent = "";
   }, 2000);
 };
+
+export const sendRequest = async ({ method, body, url }) => {
+  const requestConfig = method === "post"
+    ? {
+      method,
+      body: JSON.stringify(body),
+      headers: {
+        "content-type": "application/json",
+      },
+    }
+    : { method };
+  return await fetch(url, requestConfig).then((data) => data.json());
+};

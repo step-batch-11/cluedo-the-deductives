@@ -48,6 +48,7 @@ export class Game {
 
     this.#activePlayer =
       this.#turnOrder[this.#turnNum++ % this.#turnOrder.length];
+
     if (this.#activePlayer.getPlayerData().isEliminated) {
       this.updateTurn();
     }
@@ -95,7 +96,7 @@ export class Game {
     );
   }
 
-  getTurnOrder() {
+  #getTurnOrder() {
     return this.#turnOrder;
   }
 
@@ -161,5 +162,27 @@ export class Game {
 
   getReachableNodes(position, steps) {
     return this.#board.getReachableNodes(position, steps);
+  }
+
+  #isMatchingCombination(murderCombination, playerCombination) {
+    return Object.keys(murderCombination).every(
+      (key) =>
+        murderCombination[key].toLowerCase() ===
+          playerCombination[key].toLowerCase(),
+    );
+  }
+
+  accuse({ suspect, weapon, room }) {
+    if (!(suspect && weapon && room)) {
+      throw new Error("Invalid Accusation Combination");
+    }
+    const murderCombination = this.#deck.getMurderCombination();
+    const playerCombination = { suspect, weapon, room };
+
+    const isCorrect = this.#isMatchingCombination(
+      murderCombination,
+      playerCombination,
+    );
+    return { isCorrect, murderCombination };
   }
 }

@@ -1,4 +1,4 @@
-import { toId, toSentenceCase } from "./utils.js";
+import { sendRequest, toId, toSentenceCase } from "./utils.js";
 
 const getTemplateClone = (templateId) => {
   const template = document.querySelector(`#${templateId}`);
@@ -12,7 +12,7 @@ const createOption = (option, optionLabel) => {
   const label = optionClone.querySelector("label");
 
   input.name = optionLabel;
-  input.value = toId(option);
+  input.value = option;
   input.id = `accuse-${toId(option)}`;
 
   label.textContent = toSentenceCase(option);
@@ -26,6 +26,26 @@ const renderOptions = (optionsToRender) => {
 
     const optionElements = options.map((option) => createOption(option, label));
     optionsContainer.append(...optionElements);
+  });
+};
+
+const attachSubmitAccusationListener = () => {
+  const form = document.querySelector("form");
+
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    const formdata = new FormData(form);
+    const accusationDetails = Object.fromEntries(formdata.entries());
+    const { suspects: suspect, weapons: weapon, rooms: room } =
+      accusationDetails;
+    if (Object.keys(accusationDetails).length === 3) {
+      await sendRequest({
+        url: "/accuse",
+        method: "post",
+        body: { suspect, weapon, room },
+      });
+    }
+    form.reset();
   });
 };
 
@@ -49,6 +69,7 @@ const renderAccusationForm = (suspects, weapons, rooms) => {
   body.appendChild(accusationPopup);
   attachClosePopupListener();
   renderOptions([suspects, weapons, rooms]);
+  attachSubmitAccusationListener();
 };
 
 export const displayAccusationPopup = () => {

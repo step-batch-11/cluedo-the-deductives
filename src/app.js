@@ -1,12 +1,13 @@
 import { Hono } from "hono";
 import { serveStatic } from "hono/deno";
 import {
-  movePawnHanlder,
+  movePawnHandler,
   serveGetReachableNodes,
   serveRollDice,
 } from "./handlers/board.js";
 import {
   getGameState,
+  handleAccusation,
   startGame,
   updateGameState,
   updateTurn,
@@ -27,12 +28,13 @@ export const createApp = ({ game, randomFn, ceilFn, logger }) => {
   app.post("/roll", (c) => serveRollDice(c, randomFn, ceilFn));
   app.get("/get-reachable-nodes", serveGetReachableNodes);
   app.post("/update-state", updateGameState);
-  app.post("/update-pawn-position", movePawnHanlder);
+  app.post("/update-pawn-position", movePawnHandler);
   app.post("/pass", updateTurn);
+  app.post("/accuse", handleAccusation);
+
   app.get("*", serveStatic({ root: "./public" }));
 
   app.onError((e, c) => {
-    console.log(e);
     return c.json({ error: e.message }, 400);
   });
   return app;

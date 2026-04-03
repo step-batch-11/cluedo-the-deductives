@@ -141,21 +141,6 @@ describe("GAME", () => {
   });
 
   describe("turn order", () => {
-    it("should return players sorted by pawn id", () => {
-      const p1 = new Player(1, "A", false);
-      const p2 = new Player(2, "B", false);
-      const p3 = new Player(3, "C", false);
-
-      game.addPlayer(p1);
-      game.addPlayer(p2);
-      game.addPlayer(p3);
-
-      game.start();
-
-      const order = game.getTurnOrder();
-      assertEquals(order.length, 3);
-    });
-
     it("should return current player after start", () => {
       const p1 = new Player(1, "A", true);
       const p2 = new Player(2, "B", false);
@@ -242,6 +227,67 @@ describe("GAME", () => {
       const actual = game.getSuspectCombination();
 
       assertEquals(actual, suspectCombination);
+    });
+  });
+
+  describe("accuse murder combination", () => {
+    beforeEach(() => {
+      const p1 = new Player(1, "A", false);
+      const p2 = new Player(2, "B", false);
+      const p3 = new Player(3, "C", false);
+
+      game.addPlayer(p1);
+      game.addPlayer(p2);
+      game.addPlayer(p3);
+
+      game.start();
+      game.changeCurrentState();
+    });
+
+    it(" => should give true for matching combination", () => {
+      const accusingCombination = {
+        suspect: SUSPECTS[0],
+        weapon: WEAPONS[0],
+        room: ROOMS[0],
+      };
+      const { isCorrect, murderCombination } = game.accuse(
+        accusingCombination,
+      );
+
+      assertEquals(isCorrect, true);
+      assertEquals(murderCombination, accusingCombination);
+    });
+
+    it(" => should give false for matching combination", () => {
+      const accusingCombination = {
+        suspect: SUSPECTS[1],
+        weapon: WEAPONS[0],
+        room: ROOMS[0],
+      };
+      const { isCorrect, murderCombination } = game.accuse(
+        accusingCombination,
+      );
+
+      assertEquals(isCorrect, false);
+      assertEquals(murderCombination, {
+        ...accusingCombination,
+        suspect: SUSPECTS[0],
+      });
+    });
+
+    it(" => should fail for invalid combination", () => {
+      const accusingCombination = {
+        weapon: WEAPONS[0],
+        room: ROOMS[0],
+      };
+
+      assertThrows(
+        () => {
+          game.accuse(accusingCombination);
+        },
+        Error,
+        "Invalid Accusation Combination",
+      );
     });
   });
 });

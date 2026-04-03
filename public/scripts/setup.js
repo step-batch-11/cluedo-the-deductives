@@ -184,11 +184,10 @@ const init = async () => {
 
   const totalPlayers = await fetch("/game-state")
     .then((res) => res.json())
-    .then((x) => x.players.length)
-    .catch((e) => console.log(e));
+    .then((x) => x.players.length);
 
   dealToEnvelope(() => collectAndDeal(totalPlayers));
-  setTimeout(redirect, 70);
+  setTimeout(redirect, 7000);
 };
 
 globalThis.onload = init;

@@ -2,6 +2,7 @@ import { assertEquals } from "@std/assert";
 import { beforeEach, describe, it } from "@std/testing/bdd";
 import { createApp } from "../../src/app.js";
 import { createGameInstance } from "../../src/utils/game.js";
+import { ROOMS, SUSPECTS, WEAPONS } from "../../src/constants/game_config.js";
 
 describe("game handler", () => {
   let app;
@@ -59,6 +60,23 @@ describe("game handler", () => {
       const body = await res.json();
       assertEquals(res.status, 200);
       assertEquals(body.currentPlayer.isEliminated, false);
+    });
+  });
+
+  describe("POST /accuse", () => {
+    it("=> should update the player turn", async () => {
+      const res = await app.request("/accuse", {
+        method: "post",
+        body: JSON.stringify({
+          suspect: SUSPECTS[0],
+          weapon: WEAPONS[0],
+          room: ROOMS[0],
+        }),
+      });
+      const body = await res.json();
+
+      assertEquals(res.status, 200);
+      assertEquals(body.isCorrect, false);
     });
   });
 });

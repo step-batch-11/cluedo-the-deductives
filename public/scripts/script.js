@@ -11,7 +11,6 @@ const main = async () => {
   const accuseBtn = document.querySelector("#accuse-button");
 
   renderBoard(boardConfig);
-
   accuseBtnListener(accuseBtn);
 
   const alreadyShown = sessionStorage.getItem("gameStartedPopup");
@@ -29,7 +28,7 @@ const main = async () => {
         renderActions(boardConfig);
         suspicionBtnListener(boardConfig);
       });
-  }, 1000);
+  }, 5000);
 };
 
 globalThis.window.onload = main;

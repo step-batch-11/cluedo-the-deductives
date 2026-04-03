@@ -24,7 +24,7 @@ export const serveGetReachableNodes = (c) => {
   return c.json({ reachableNodes });
 };
 
-export const movePawnHanlder = async (c) => {
+export const movePawnHandler = async (c) => {
   const game = c.get("game");
   const { currentNodeId, turns } = await c.req.json();
   const [nodeId, pos] = parseNode(currentNodeId);
