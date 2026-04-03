@@ -67,14 +67,16 @@ const handleAccusationSubmission = async (combination) => {
     displayPopup("Congratulation, You Won!");
     setTimeout(() => {
       globalThis.window.location.href = "/";
-    }, 4000);
+    }, 3000);
+  } else {
+    displayPopup("The combination is wrong. You are eliminated");
   }
 };
 
 const closePopup = (popup) => {
   setTimeout(() => {
     popup.remove();
-  }, 5000);
+  }, 3000);
 };
 
 const attachSubmitAccusationListener = () => {

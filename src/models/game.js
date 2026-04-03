@@ -1,4 +1,3 @@
-import { shuffle } from "@std/random";
 import { Player } from "./player.js";
 import { Turn } from "./turn.js";
 
@@ -15,21 +14,20 @@ export class Game {
   #players;
   #turnOrder;
   #activePlayer;
-  #shuffle;
-  constructor(id, board, pawns, deck, shuffleFn = shuffle) {
+
+  constructor(id, board, pawns, deck, shuffledPawns) {
     this.#gameState = this.#states.shift();
     this.#id = id;
     this.#board = board;
     this.#pawns = pawns;
     this.#deck = deck;
     this.#players = {};
-    this.#shuffle = shuffleFn;
-    this.#pawnsToAssign = shuffleFn(pawns);
+    this.#pawnsToAssign = shuffledPawns;
     this.#turnNum = 0;
   }
 
   changeCurrentState() {
-    this.#gameState = this.#states.shift();
+    this.#gameState = this.#states.shift() || "finished";
   }
 
   start() {
@@ -41,23 +39,24 @@ export class Game {
 
     this.#distributeCards();
     this.#setTurnOrder();
-    this.#setCurrentPlayer();
+    this.#setCurrentPlayer(0);
     this.changeCurrentState();
+  }
+
+  #getActivePlayers() {
+    return this.#getAllPlayers().filter((player) => !player.isEliminated);
   }
 
   updateTurn() {
     if (this.#gameState !== "running") {
-      throw new Error("Game hasn't started yet");
+      throw new Error("Game is not running");
     }
 
-    this.#activePlayer =
-      this.#turnOrder[this.#turnNum++ % this.#turnOrder.length];
+    this.#setCurrentPlayer(this.#turnNum++ % this.#turnOrder.length);
 
     if (this.#activePlayer.getPlayerData().isEliminated) {
       this.updateTurn();
     }
-
-    this.#turn = new Turn(this.#activePlayer);
 
     return this.#activePlayer.getPlayerData();
   }
@@ -81,8 +80,8 @@ export class Game {
     };
   }
 
-  #setCurrentPlayer() {
-    this.#activePlayer = this.#turnOrder[0];
+  #setCurrentPlayer(turnNumber) {
+    this.#activePlayer = this.#turnOrder[turnNumber];
     this.#turn = new Turn(this.#activePlayer);
   }
 
@@ -141,8 +140,10 @@ export class Game {
   }
 
   #isRollAllowed(playerId) {
-    return playerId === this.#activePlayer?.getPlayerData().id &&
-      !(this.#turn?.getIsDiceRolled() || this.#getHasUsedSecretPassage());
+    return (
+      playerId === this.#activePlayer?.getPlayerData().id &&
+      !(this.#turn?.getIsDiceRolled() || this.#getHasUsedSecretPassage())
+    );
   }
 
   getSuspectCombination() {
@@ -179,12 +180,16 @@ export class Game {
 
   #finishGame() {
     this.changeCurrentState();
-    this.#activePlayer.setWon();
+    this.#activePlayer?.setWon();
   }
 
   #eliminatePlayer() {
-    this.#activePlayer.eliminate();
+    this.#activePlayer?.eliminate();
     this.updateTurn();
+
+    if (this.#getActivePlayers().length <= 1) {
+      this.#finishGame();
+    }
   }
 
   accuse({ suspect, weapon, room }) {
@@ -238,9 +243,11 @@ export class Game {
   #isValidMove(tileId, possibleTiles) {
     const currentPlayer = this.getCurrentPlayer()?.getPlayerData();
 
-    return this.#hasPossibleMove(possibleTiles, tileId) &&
+    return (
+      this.#hasPossibleMove(possibleTiles, tileId) &&
       (this.#getHasUsedSecretPassage() ||
-        !this.#isRollAllowed(currentPlayer.id));
+        !this.#isRollAllowed(currentPlayer.id))
+    );
   }
 
   movePawn(

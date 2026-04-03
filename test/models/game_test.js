@@ -31,7 +31,7 @@ describe("GAME", () => {
         },
         (list) => [...list],
       ),
-      (list) => [...list],
+      [scarlet, colonel, plum],
     );
 
     playerId = 1;
@@ -110,7 +110,7 @@ describe("GAME", () => {
           game.updateTurn();
         },
         Error,
-        "Game hasn't started yet",
+        "Game is not running",
       );
     });
 
@@ -314,7 +314,7 @@ describe("GAME", () => {
           },
           (list) => [...list],
         ),
-        (list) => [...list],
+        [scarlet, colonel, plum],
       );
 
       const p1 = new Player(1, "A", false);
