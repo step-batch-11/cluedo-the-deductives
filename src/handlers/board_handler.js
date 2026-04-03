@@ -25,6 +25,7 @@ export const serveGetReachableNodes = (c) => {
 export const movePawnHandler = async (c) => {
   const game = c.get("game");
   const { currentNodeId, tiles, isUsingSecretPassage } = await c.req.json();
+
   const [nodeId, pos] = parseNode(currentNodeId);
   const currentPawn = await c.req.param("pawnId");
   const pawn = game.getPawnInstance(+currentPawn);

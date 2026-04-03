@@ -57,13 +57,24 @@ const showResult = (data, result) => {
   closeBtn.style.display = "inline-block";
 };
 
-const mockFetchSuspicion = (suspicion) => {
+const mockFetchSuspicion = async (suspicion) => {
   const body = JSON.stringify(suspicion);
-  fetch("/add-suspicion", {
+  await fetch("/add-suspicion", {
     method: "POST",
     body,
     headers: { "content-type": "application/json" },
   });
+
+  await fetch(`/update-pawn-position/${suspicion.suspectId}`, {
+    method: "put",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify({
+      currentNodeId: suspicion.room,
+      tiles: [suspicion.room],
+      isUsingSecretPassage: false,
+    }),
+  });
+
   return new Promise((resolve) => {
     setTimeout(() => {
       const isDisproved = Math.random() > 0.5;
@@ -74,6 +85,9 @@ const mockFetchSuspicion = (suspicion) => {
         card: isDisproved ? suspicion.weapon : null,
       });
     }, 2000);
+    setTimeout(() => {
+      globalThis.window.location.reload();
+    }, 3000);
   });
 };
 
@@ -82,6 +96,7 @@ const submitSuspicion = async () => {
     suspect: SUSPICION_STATE.selectedSuspect,
     weapon: SUSPICION_STATE.selectedWeapon,
     room: SUSPICION_STATE.currentRoom,
+    suspectId: SUSPICION_STATE.suspectId,
   };
 
   showModal(suspicion);
@@ -138,10 +153,11 @@ const onPawnSelect = (e, suspects) => {
 
   const suspect = pawnElement.dataset.occupiedBy;
   removePawnHighlight();
-  const { name } = suspects
+  const { id, name } = suspects
     .find(({ char }) => char === suspect);
-  SUSPICION_STATE.selectedSuspect = name;
 
+  SUSPICION_STATE.selectedSuspect = name;
+  SUSPICION_STATE.suspectId = id;
   showWeaponPopup(e.pageX, e.pageY);
 };
 

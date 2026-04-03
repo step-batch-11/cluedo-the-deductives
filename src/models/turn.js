@@ -46,6 +46,7 @@ export class Turn {
   addSuspectCombination(suspectCombination) {
     this.#suspectCombination = suspectCombination;
     this.#hasSuspected = true;
+    this.#isDiceRolled = true;
   }
 
   getSuspectCombination() {
