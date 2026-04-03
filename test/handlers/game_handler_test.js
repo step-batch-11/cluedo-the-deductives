@@ -117,11 +117,11 @@ describe("game handler", () => {
     });
   });
 
-  describe("POST /add-suspicion", () => {
+  describe("POST /suspect", () => {
     it("=> should return false if the player is not in the room", async () => {
       await app.request("/start-game", { method: "post" });
 
-      const res = await app.request("/add-suspicion", {
+      const res = await app.request("/suspect", {
         method: "post",
         body: JSON.stringify({
           suspect: SUSPECTS[0],

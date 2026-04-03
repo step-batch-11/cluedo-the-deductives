@@ -59,7 +59,7 @@ const showResult = (data, result) => {
 
 const mockFetchSuspicion = async (suspicion) => {
   const body = JSON.stringify(suspicion);
-  await fetch("/add-suspicion", {
+  await fetch("/suspect", {
     method: "POST",
     body,
     headers: { "content-type": "application/json" },
@@ -104,36 +104,127 @@ const submitSuspicion = async () => {
   const result = await mockFetchSuspicion(suspicion);
 
   showResult(suspicion, result);
-
   SUSPICION_STATE.hasMadeSuspicion = true;
 };
 
-const selectWeapon = (weapon) => {
-  SUSPICION_STATE.selectedWeapon = weapon;
+let selectedWeaponEl = null;
 
-  weaponPopup.classList.add("hidden");
+const selectWeapon = (card, selectedLabel, weapon) => {
+  if (selectedWeaponEl) {
+    selectedWeaponEl.classList.remove("weapon-selected");
+  }
 
-  submitSuspicion();
+  if (selectedWeaponEl === card) {
+    selectedWeaponEl = null;
+    SUSPICION_STATE.selectedWeapon = null;
+    selectedLabel.textContent = "Select a weapon";
+  } else {
+    card.classList.add("weapon-selected");
+    selectedWeaponEl = card;
+    SUSPICION_STATE.selectedWeapon = weapon;
+    selectedLabel.textContent = weapon;
+  }
+};
+
+const createActionButtons = () => {
+  const actions = document.createElement("div");
+  actions.className = "weapon-popup-actions";
+
+  const suspectBtn = createSuspectButton();
+
+  const cancelBtn = createCancelButton();
+
+  actions.appendChild(suspectBtn);
+  actions.appendChild(cancelBtn);
+  return actions;
+};
+
+const createCancelButton = () => {
+  const cancelBtn = document.createElement("button");
+  cancelBtn.className = "weapon-btn weapon-btn-cancel";
+  cancelBtn.textContent = "cancel";
+  cancelBtn.onclick = () => {
+    weaponPopup.classList.add("hidden");
+    selectedWeaponEl = null;
+    SUSPICION_STATE.selectedWeapon = null;
+    SUSPICION_STATE.selectedSuspect = null;
+  };
+  return cancelBtn;
+};
+
+const createSuspectButton = () => {
+  const suspectBtn = document.createElement("button");
+  suspectBtn.className = "weapon-btn weapon-btn-confirm";
+  suspectBtn.textContent = "suspect";
+  suspectBtn.onclick = () => {
+    if (!SUSPICION_STATE.selectedWeapon) return;
+    weaponPopup.classList.add("hidden");
+    submitSuspicion();
+  };
+  return suspectBtn;
+};
+
+const createSelectLabel = () => {
+  const selectedLabel = document.createElement("div");
+  selectedLabel.className = "weapon-selected-label";
+  selectedLabel.id = "weapon-selected-label";
+  selectedLabel.textContent = "Select a weapon";
+  weaponPopup.appendChild(selectedLabel);
+  return selectedLabel;
+};
+
+const createRoomLabel = () => {
+  const roomLabel = document.createElement("div");
+  roomLabel.className = "weapon-popup-room";
+  roomLabel.textContent = SUSPICION_STATE.currentRoom;
+  return roomLabel;
+};
+
+const createWeaponRow = (selectedLabel) => {
+  const row = document.createElement("div");
+  row.className = "weapon-cards-row";
+
+  WEAPONS.forEach((weapon) => {
+    appendWeapon(weapon, selectedLabel, row);
+  });
+
+  weaponPopup.appendChild(row);
+};
+
+const appendWeapon = (weapon, selectedLabel, row) => {
+  const card = document.createElement("div");
+  card.className = "weapon-item";
+  card.dataset.weapon = weapon;
+
+  const dot = document.createElement("div");
+  dot.className = "weapon-dot";
+  card.appendChild(dot);
+
+  card.addEventListener("click", () => {
+    selectWeapon(card, selectedLabel, weapon);
+  });
+
+  row.appendChild(card);
 };
 
 const showWeaponPopup = (x, y) => {
   weaponPopup.innerHTML = "";
+  selectedWeaponEl = null;
+  SUSPICION_STATE.selectedWeapon = null;
 
-  WEAPONS.forEach((weapon) => {
-    const el = document.createElement("div");
-    el.className = "weapon-item";
-    el.textContent = weapon;
+  const roomLabel = createRoomLabel();
+  weaponPopup.appendChild(roomLabel);
 
-    el.onclick = () => selectWeapon(weapon);
+  const selectedLabel = createSelectLabel();
+  createWeaponRow(selectedLabel);
 
-    weaponPopup.appendChild(el);
-  });
+  const actionBtns = createActionButtons();
+  weaponPopup.append(roomLabel, actionBtns);
 
-  weaponPopup.style.left = Math.min(x, globalThis.window.innerWidth - 200) +
+  weaponPopup.style.left = Math.min(x, globalThis.window.innerWidth - 380) +
     "px";
-  weaponPopup.style.top = Math.min(y, globalThis.window.innerHeight - 100) +
+  weaponPopup.style.top = Math.min(y, globalThis.window.innerHeight - 180) +
     "px";
-
   weaponPopup.classList.remove("hidden");
 };
 
