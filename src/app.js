@@ -14,7 +14,7 @@ import {
 } from "./handlers/game.js";
 import { addMockPlayer } from "./middleware/mock_player.js";
 
-export const createApp = ({ game, randomFn, ceilFn, logger }) => {
+export const createApp = ({ game, getRandom, roundUp, logger }) => {
   const app = new Hono();
   app.use(logger());
 
@@ -25,7 +25,7 @@ export const createApp = ({ game, randomFn, ceilFn, logger }) => {
 
   app.post("/start-game", addMockPlayer, startGame);
   app.get("/game-state", getGameState);
-  app.post("/roll", (c) => serveRollDice(c, randomFn, ceilFn));
+  app.post("/roll", (c) => serveRollDice(c, getRandom, roundUp));
   app.get("/get-reachable-nodes", serveGetReachableNodes);
   app.post("/update-state", updateGameState);
   app.post("/update-pawn-position", movePawnHandler);

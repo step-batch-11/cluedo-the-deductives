@@ -7,8 +7,8 @@ const main = () => {
   const game = createGameInstance();
   const app = createApp({
     game,
-    randomFn: Math.random,
-    ceilFn: Math.ceil,
+    getRandom: Math.random,
+    roundUp: Math.ceil,
     logger,
   });
   Deno.serve({ port: PORT }, app.fetch);

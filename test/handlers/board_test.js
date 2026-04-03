@@ -14,8 +14,8 @@ describe("BOARD", () => {
     game = createGameInstance();
     app = createApp({
       game,
-      randomFn: () => 1,
-      ceilFn: (x) => x,
+      getRandom: () => 1,
+      roundUp: (x) => x,
       logger: () => (_, next) => next(),
     });
   });

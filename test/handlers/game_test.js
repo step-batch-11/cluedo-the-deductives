@@ -13,8 +13,8 @@ describe("game handler", () => {
 
     app = createApp({
       game,
-      randomFn: () => 1,
-      ceilFn: (x) => x,
+      getRandom: () => 1,
+      roundUp: (x) => x,
       logger: () => (_, next) => next(),
     });
     playerId = 1;
