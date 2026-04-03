@@ -35,3 +35,13 @@ export const handleAccusation = async (c) => {
 
   return c.json({ isCorrect, murderCombination });
 };
+
+export const addSuspicion = async (c) => {
+  const suspicion = await c.req.json();
+  const game = c.get("game");
+  if (game.canSuspect()) {
+    game.addSuspicion(suspicion);
+    return c.json({ status: true });
+  }
+  return c.json({ status: false });
+};

@@ -6,6 +6,7 @@ import {
   serveRollDice,
 } from "./handlers/board_handler.js";
 import {
+  addSuspicion,
   getGameState,
   handleAccusation,
   startGame,
@@ -25,6 +26,10 @@ export const createApp = ({ game, getRandom, roundUp, logger }) => {
 
   app.get("/game-state", getGameState);
   app.get("/get-reachable-nodes", serveGetReachableNodes);
+  app.post("/update-state", updateGameState);
+  app.post("/update-pawn-position", movePawnHandler);
+  app.post("/pass", updateTurn);
+  app.post("/save-suspicion", addSuspicion);
   app.get("*", serveStatic({ root: "./public" }));
 
   app.post("/roll", (c) => serveRollDice(c, getRandom, roundUp));

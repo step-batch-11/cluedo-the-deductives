@@ -2,14 +2,14 @@ export class Turn {
   #player;
   #isDiceRolled;
   #diceValue;
-  #hadSuspected;
+  #hasSuspected;
   #suspectCombination;
 
   constructor(player) {
     this.#player = player;
     this.#isDiceRolled = false;
     this.#diceValue = [];
-    this.#hadSuspected = false;
+    this.#hasSuspected = false;
   }
 
   getIsDiceRolled() {
@@ -30,12 +30,12 @@ export class Turn {
 
   canSuspect() {
     const pawnLocation = this.#player.getPlayerData().pawn.position;
-    return !!pawnLocation.room && !this.#hadSuspected;
+    return !!pawnLocation.room && !this.#hasSuspected;
   }
 
   addSuspectCombination(suspectCombination) {
     this.#suspectCombination = suspectCombination;
-    this.#hadSuspected = true;
+    this.#hasSuspected = true;
   }
 
   getSuspectCombination() {

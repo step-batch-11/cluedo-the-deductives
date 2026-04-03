@@ -72,8 +72,8 @@ export class Game {
       pawns: this.#getAllPawns(),
       activePlayer: this.#activePlayer?.getPlayerData(),
       canRoll: this.#isRollAllowed(playerId),
-      canSuspect: this.#turn?.canSuspect(),
       secretPassageId: this.#getSecretPassageId(playerId),
+      canSuspect: this.canSuspect(),
     };
   }
 
@@ -148,7 +148,11 @@ export class Game {
     return this.#turn.getSuspectCombination();
   }
 
-  addSuspect(suspectCombination) {
+  canSuspect() {
+    return this.#turn?.canSuspect();
+  }
+
+  addSuspicion(suspectCombination) {
     this.#turn.addSuspectCombination(suspectCombination);
   }
 

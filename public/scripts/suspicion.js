@@ -57,32 +57,38 @@ const showResult = (data, result) => {
   closeBtn.style.display = "inline-block";
 };
 
-const mockFetchSuspicion = (data) => {
+const mockFetchSuspicion = (suspicion) => {
+  const body = JSON.stringify(suspicion);
+  fetch("/save-suspicion", {
+    method: "POST",
+    body,
+    headers: { "content-type": "application/json" },
+  });
   return new Promise((resolve) => {
     setTimeout(() => {
       const isDisproved = Math.random() > 0.5;
 
       resolve({
         disproved: isDisproved,
-        by: "rahul",
-        card: isDisproved ? data.weapon : null,
+        by: "LOKI",
+        card: isDisproved ? suspicion.weapon : null,
       });
     }, 2000);
   });
 };
 
 const submitSuspicion = async () => {
-  const data = {
+  const suspicion = {
     suspect: SUSPICION_STATE.selectedSuspect,
     weapon: SUSPICION_STATE.selectedWeapon,
     room: SUSPICION_STATE.currentRoom,
   };
 
-  showModal(data);
+  showModal(suspicion);
 
-  const result = await mockFetchSuspicion(data);
+  const result = await mockFetchSuspicion(suspicion);
 
-  showResult(data, result);
+  showResult(suspicion, result);
 
   SUSPICION_STATE.hasMadeSuspicion = true;
 };

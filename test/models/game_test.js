@@ -226,7 +226,7 @@ describe("GAME", () => {
         weapon: "dagger",
       };
 
-      game.addSuspect(suspectCombination);
+      game.addSuspicion(suspectCombination);
 
       const actual = game.getSuspectCombination();
 
