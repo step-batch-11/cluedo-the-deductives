@@ -43,11 +43,12 @@ const displayMurderCombination = (combination) => {
 };
 
 const matchCards = (accusingCombination, murderCombination) => {
+  const accusedCards = Object.values(accusingCombination);
   const murderCards = Object.values(murderCombination);
 
-  return Object.values(accusingCombination).map((card) => ({
+  return murderCards.map((card) => ({
     name: card,
-    isMatching: murderCards.includes(card),
+    isMatching: accusedCards.includes(card),
   }));
 };
 
@@ -61,12 +62,19 @@ const handleAccusationSubmission = async (combination) => {
   const matchingCards = matchCards(combination, res.murderCombination);
 
   displayMurderCombination(matchingCards);
+
+  if (res.isCorrect) {
+    displayPopup("Congratulation, You Won!");
+    setTimeout(() => {
+      globalThis.window.location.href = "/";
+    }, 4000);
+  }
 };
 
 const closePopup = (popup) => {
   setTimeout(() => {
     popup.remove();
-  }, 4000);
+  }, 5000);
 };
 
 const attachSubmitAccusationListener = () => {
