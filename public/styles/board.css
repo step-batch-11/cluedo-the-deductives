@@ -293,24 +293,13 @@ path,
 }
 
 #dice-button,
-#pass-button {
+#pass-button,
+#accuse-button {
   font-size: 48px;
 }
 
-#dice-button {
-  width: 100px;
-  height: 100px;
-  border: none;
-  font-family: var(--font-display);
-  cursor: pointer;
-  background: linear-gradient(145deg, #c89a3c, #9f7428);
-  color: #fff8e6;
-}
-
-#dice-button:hover {
-  background: linear-gradient(145deg, #d6aa4a, #b6842f);
-}
-
+#dice-button,
+#accuse-button,
 #pass-button {
   width: 100px;
   height: 100px;
@@ -321,8 +310,15 @@ path,
   color: var(--ink);
 }
 
+#dice-button:hover,
+#pass-button:hover,
+#accuse-button:hover {
+  background: linear-gradient(145deg, #d6aa4a, #b6842f);
+}
+
 #dice-button:disabled,
-#pass-button:disabled {
+#pass-button:disabled,
+#accuse-button:disabled {
   background: var(--ink-dim);
   color: #eee;
 }

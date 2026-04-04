@@ -120,7 +120,11 @@ export class Game {
     return this.#pawns.find((pawn) => pawn?.getPawnData().id === id);
   }
 
-  getRolledNumber(randomFn = Math.random, ceilFn = Math.ceil) {
+  getDiceValue() {
+    return this.#turn?.getDiceValue();
+  }
+
+  rollDice(randomFn = Math.random, ceilFn = Math.ceil) {
     if (!this.#turn) throw new Error("Invalid player turn");
     this.setUsedSecretPassage();
     return this.#turn.rollDice(randomFn, ceilFn);
@@ -148,10 +152,6 @@ export class Game {
 
   addSuspicion(suspectCombination) {
     this.#turn.addSuspectCombination(suspectCombination);
-  }
-
-  getDiceValue() {
-    return this.#turn?.getDiceValue();
   }
 
   #toggleIsOccupied(nodeId) {
