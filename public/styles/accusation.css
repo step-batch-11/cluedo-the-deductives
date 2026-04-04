@@ -68,7 +68,8 @@ label {
 
   text-align: center;
   font-family: var(--font-display);
-  font-size: 13px;
+  font-size: 16px;
+  font-weight: 600;
   letter-spacing: 0.08em;
   text-transform: uppercase;
 
@@ -113,6 +114,7 @@ input[type="radio"]:checked + label {
 #actions button {
   font-family: var(--font-display);
   font-size: 12px;
+  font-weight: 600;
   letter-spacing: 0.15em;
   text-transform: uppercase;
 
@@ -175,7 +177,7 @@ input[type="radio"]:checked + label {
 
   background: linear-gradient(160deg, #f8f0dc, #e8d8a4);
   border: 1px solid #b89040;
-  border-radius: 4px;
+  border-radius: 6px;
 
   display: flex;
   align-items: center;
@@ -184,14 +186,74 @@ input[type="radio"]:checked + label {
   transform: rotate(270deg);
 
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.2);
+
+  position: relative;
+  transition: all 0.25s ease;
 }
 
 .correct {
   border: 3px solid #2e7d32;
-  box-shadow: 0 0 12px rgba(46, 125, 50, 0.6);
+  background: linear-gradient(160deg, #f1ffe9, #c8f7c5);
+  box-shadow:
+    0 0 12px rgba(46, 125, 50, 0.6),
+    0 0 25px rgba(46, 125, 50, 0.4),
+    inset 0 0 10px rgba(46, 125, 50, 0.2);
+
+  animation: correctPulse 1.2s ease-in-out infinite alternate;
+}
+
+.correct::after {
+  content: "✓";
+  position: absolute;
+  font-size: 48px;
+  color: #2e7d32;
+  font-weight: bold;
+  opacity: 0.9;
 }
 
 .incorrect {
   border: 3px solid #a5544a;
-  box-shadow: 0 0 12px rgba(165, 84, 74, 0.6);
+  background: linear-gradient(160deg, #fff1ef, #f4c7c3);
+  box-shadow:
+    0 0 12px rgba(165, 84, 74, 0.6),
+    0 0 25px rgba(165, 84, 74, 0.4),
+    inset 0 0 10px rgba(165, 84, 74, 0.2);
+
+  animation: incorrectShake 0.4s ease;
+}
+
+.incorrect::after {
+  content: "✕";
+  position: absolute;
+  font-size: 48px;
+  color: #a5544a;
+  font-weight: bold;
+  opacity: 0.9;
+}
+
+@keyframes correctPulse {
+  from {
+    transform: rotate(270deg) scale(1);
+  }
+  to {
+    transform: rotate(270deg) scale(1.05);
+  }
+}
+
+@keyframes incorrectShake {
+  0% {
+    transform: rotate(270deg) translateX(0);
+  }
+  25% {
+    transform: rotate(270deg) translateX(-6px);
+  }
+  50% {
+    transform: rotate(270deg) translateX(6px);
+  }
+  75% {
+    transform: rotate(270deg) translateX(-4px);
+  }
+  100% {
+    transform: rotate(270deg) translateX(0);
+  }
 }
