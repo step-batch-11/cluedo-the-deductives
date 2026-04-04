@@ -59,7 +59,7 @@ describe("Turn Management", () => {
     it(" => should store suspect combination", () => {
       const combination = {
         suspect: "scarlet",
-        weapon: "knife",
+        weapon: "dagger",
         room: "kitchen",
       };
 

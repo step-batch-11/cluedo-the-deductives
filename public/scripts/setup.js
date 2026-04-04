@@ -86,7 +86,7 @@ const placeInEnvelope = (flying, top, deckIndex, envelope, total, cb) => {
       card.className = "deck-card";
       card.textContent = "Cluedo";
       Object.assign(card.style, {
-        left: `${deckIndex * 10 + 20}px`,
+        left: `${deckIndex * 10 + 50}px`,
         bottom: `${deckIndex * 5}px`,
         transform: `rotate(${deckIndex * 5}deg)`,
       });

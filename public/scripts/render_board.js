@@ -87,7 +87,7 @@ const moveWeapon = (tooltip, e) => {
 };
 
 const previewWeapon = (e, tooltip) => {
-  tooltip.textContent = e.target.dataset.name;
+  tooltip.textContent = toSentenceCase(e.target.dataset.name);
   tooltip.classList.remove("hidden");
 };
 
