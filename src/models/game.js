@@ -155,7 +155,8 @@ export class Game {
   }
 
   #toggleIsOccupied(nodeId) {
-    if (nodeId.includes("-")) {
+    const hasTile = this.#board.getGraph()[nodeId].type === "tile";
+    if (hasTile) {
       this.#board.toggleIsOccupied(nodeId);
     }
   }
@@ -218,11 +219,14 @@ export class Game {
     const room = this.#activePlayer?.getPlayerData().pawn.position.room;
     const secretPassages = this.#board.getSecretPassages();
 
+    const isSecretPassage = room in secretPassages;
+    const playerCanRollDice = this.#isRollAllowed(playerId);
+    const playerCanSuspect = this.#turn?.canSuspect();
+    const playerHasNotUsedSecretPassage = !this.#turn?.getUsedSecretPassage();
+
     if (
-      room in secretPassages &&
-      this.#isRollAllowed(playerId) &&
-      this.#turn?.canSuspect() &&
-      !this.#turn?.getUsedSecretPassage()
+      isSecretPassage && playerHasNotUsedSecretPassage &&
+      playerCanRollDice && playerCanSuspect
     ) {
       return secretPassages[room];
     }
