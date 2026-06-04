@@ -4,7 +4,7 @@ import { polling } from "./web-socket-connection/polling.js";
 
 const main = async () => {
   const { gameConfig } = await fetchGameState("/game");
-  await setupGame(gameConfig);
+  setupGame(gameConfig);
   polling();
 };
 

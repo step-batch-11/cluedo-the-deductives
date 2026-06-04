@@ -1,9 +1,10 @@
-import { displayInitialMessage } from "../components/popup.js";
+import { notifyGameStart } from "../components/popup.js";
 import { Shimmer } from "../components/shimmer.js";
 import { accuseBtnListener } from "./board.js";
+import { setupSecretPassageEvents } from "./event-listners/secret_passage_tooltip.js";
+import { setupWeaponsEvents } from "./event-listners/weapon_tooltips.js";
 import { renderPlayers } from "./render_player.js";
 import { renderPlayerCards } from "./render_player_cards.js";
-import { toSentenceCase } from "./utils/common.js";
 
 const initializeRoomState = (roomId) => {
   const slots = document.querySelectorAll(`#${roomId}-group .room-slot`);
@@ -84,52 +85,7 @@ export const clearAllPawns = () => {
   });
 };
 
-const hideSecretPassage = (tooltip) => {
-  tooltip.classList.add("hidden");
-};
-
-const previewSecretPassage = (p, tooltip) => {
-  const to = p.dataset.to;
-  const direction = p.dataset.tooltip;
-  const formatted = toSentenceCase(to);
-  tooltip.textContent = `Go to ${formatted}`;
-  tooltip.className = `tooltip tooltip-${direction}`;
-  const rect = p.getBoundingClientRect();
-  tooltip.style.left = `${rect.left + rect.width / 2}px`;
-  tooltip.style.top = `${rect.top + rect.height / 2}px`;
-  tooltip.classList.remove("hidden");
-};
-
-const setupSecretPassageEvents = (tooltip) => {
-  const passages = document.querySelectorAll(".secret-passage");
-  passages.forEach((p) => {
-    p.addEventListener("mouseenter", (_e) => previewSecretPassage(p, tooltip));
-    p.addEventListener("mouseleave", () => hideSecretPassage(tooltip));
-  });
-};
-
-const hideWeapon = (tooltip) => tooltip.classList.add("hidden");
-
-const moveWeapon = (tooltip, e) => {
-  tooltip.style.left = e.pageX + 10 + "px";
-  tooltip.style.top = e.pageY + 10 + "px";
-};
-
-const previewWeapon = (e, tooltip) => {
-  tooltip.textContent = toSentenceCase(e.target.dataset.name);
-  tooltip.classList.remove("hidden");
-};
-
-const setupWeaponsEvents = (tooltip) => {
-  const weapons = document.querySelectorAll(".weapon");
-  weapons.forEach((weapon) => {
-    weapon.addEventListener("mouseenter", (e) => previewWeapon(e, tooltip));
-    weapon.addEventListener("mousemove", (e) => moveWeapon(tooltip, e));
-    weapon.addEventListener("mouseleave", () => hideWeapon(tooltip));
-  });
-};
-
-export const setupGame = async (gameConfig) => {
+export const setupGame = (gameConfig) => {
   const tooltip = document.getElementById("tooltip");
   const playerCardsContainer = document.getElementById("players-cards-details");
   const shimmerELement = document.querySelector(".shimmer-overlay");
@@ -144,7 +100,7 @@ export const setupGame = async (gameConfig) => {
   clearAllPawns();
 
   accuseBtnListener(accuseBtn);
-  await displayInitialMessage();
+  notifyGameStart(gameConfig);
 
   shimmer.init();
 };

@@ -32,23 +32,16 @@ const createPlayer = (node, player, activePlayer, currentPlayer) => {
   playerPawn.textContent = toNormalCase(player.pawn);
 };
 
-export const renderPlayers = (boardConfig) => {
-  const allPlayerContainer = document.querySelector(
-    "#players-details-container",
+export const renderPlayers = ({ players, activePlayer, currentPlayer }) => {
+  const allPlayerContainer = document.getElementById(
+    "players-details-container",
   );
   const playerTemplate = document.getElementById("player-template");
 
-  allPlayerContainer.innerHTML = "";
-
-  for (const player of boardConfig.players) {
+  for (const player of players) {
     const playerClone = playerTemplate.content.cloneNode(true);
+    createPlayer(playerClone, player, activePlayer, currentPlayer);
 
-    createPlayer(
-      playerClone,
-      player,
-      boardConfig.activePlayer,
-      boardConfig.currentPlayer,
-    );
     allPlayerContainer.appendChild(playerClone);
   }
 };

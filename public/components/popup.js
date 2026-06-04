@@ -1,5 +1,3 @@
-import { fetchGameState } from "../scripts/api/fetch_service.js";
-
 const DOT_COLORS = {
   success: "#1D9E75",
   error: "#E24B4A",
@@ -24,11 +22,11 @@ export const displayPopup = (message, type = "default") => {
   }, 2000);
 };
 
-export const displayInitialMessage = async () => {
-  const { gameConfig } = await fetchGameState("/game");
+export const notifyGameStart = (gameConfig) => {
   const alreadyShown = sessionStorage.getItem("gameStartedPopup");
+  const isGameStarted = gameConfig.state === "running";
 
-  if (gameConfig.state === "running" && !alreadyShown) {
+  if (isGameStarted && !alreadyShown) {
     displayPopup("Game has started!", "info");
     sessionStorage.setItem("gameStartedPopup", "true");
   }
